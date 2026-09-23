@@ -347,6 +347,8 @@ a { color: var(--azul); }
   border-radius: var(--raio);
 }
 .vazio h3 { font-size: 1.2rem; }
+.vazio--convite { border-color: color-mix(in srgb, var(--verde-csu) 35%, transparent); background: var(--verde-claro); }
+.vazio--convite h3 { color: var(--verde-csu); }
 .vazio p { color: var(--texto-suave); }
 
 /* ---------- Rodapé ---------- */

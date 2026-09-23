@@ -135,6 +135,19 @@ function cartao(r) {
 }
 
 function desenharGrade() {
+  /* Sem turma escolhida e sem busca: os recursos ficam ocultos até a escolha */
+  if (estado.turma === "todas" && !estado.busca) {
+    el.grade.innerHTML = "";
+    el.contagem.textContent = "";
+    el.vazio.hidden = false;
+    el.vazio.classList.add("vazio--convite");
+    el.vazio.innerHTML = `
+      <h3>Selecione uma turma</h3>
+      <p>Clique em um dos pontos do circuito acima para ver os recursos da turma.</p>`;
+    return;
+  }
+  el.vazio.classList.remove("vazio--convite");
+
   const lista = filtrar().sort((a, b) => b.data.localeCompare(a.data));
   el.grade.innerHTML = lista.map(cartao).join("");
   el.contagem.textContent = lista.length
