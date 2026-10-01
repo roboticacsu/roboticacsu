@@ -427,7 +427,7 @@
       var cor = (TURMAS.find(function (x) { return x.id === [].concat(r.turma || [])[0]; }) || {}).cor;
       return '<li class="item" style="--cor:' + (cor || "#4FA8C7") + '">' +
         "<h3>" + esc(r.titulo) + "</h3>" +
-        "<p>" + esc(TIPOS[r.tipo] || r.tipo) + " | " + esc(turmas.join(", ")) + "</p>" +
+        "<p>" + esc(TIPOS[r.tipo] || r.tipo) + " | " + esc(turmas.length === TURMAS.length ? "Todas as turmas" : turmas.join(", ")) + "</p>" +
         '<div class="item__acoes">' +
           '<button type="button" class="editar" data-chave="' + esc(chaveDe(r)) + '">Editar</button>' +
           '<button type="button" class="excluir" data-chave="' + esc(chaveDe(r)) + '">Excluir</button>' +

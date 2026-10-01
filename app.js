@@ -122,7 +122,7 @@ function cartao(r) {
         ${ehNovo(r.data) ? '<span class="selo selo--novo">Novo</span>' : ""}
       </div>
       <h3>${esc(r.titulo)}</h3>
-      <p class="recurso__turmas">${turmas.map((t) => esc(t.nome)).join(", ")}</p>
+      <p class="recurso__turmas">${turmas.length === TURMAS.length ? "Todas as turmas" : turmas.map((t) => esc(t.nome)).join(", ")}</p>
       <p>${esc(r.descricao)}</p>
       ${detalhes ? `<dl class="recurso__detalhes">${detalhes}</dl>` : ""}
       ${r.etiquetas?.length ? `<ul class="etiquetas">${r.etiquetas.map((e) => `<li>${esc(e)}</li>`).join("")}</ul>` : ""}

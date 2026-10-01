@@ -44,13 +44,34 @@
 
 const RECURSOS = [
   {
+    "id": "elevator-saga-2026-10-01",
+    "titulo": "Elevator Saga",
+    "descricao": "O Elevator Saga é um jogo em que o estudante escreve código em JavaScript para controlar elevadores em um prédio virtual. A cada desafio, é preciso transportar certo número de pessoas dentro de um limite de tempo ou de movimentos. Os desafios ficam progressivamente mais difíceis, com mais andares, mais elevadores e metas mais exigentes.",
+    "turma": "criadores",
+    "tipo": "atividade",
+    "link": "https://play.elevatorsaga.com/",
+    "data": "2026-10-01",
+    "etiquetas": [
+      "JavaScript",
+      "Programação",
+      "Algoritmos",
+      "Lógica",
+      "Jogo",
+      "Desafio"
+    ]
+  },
+  {
     "id": "cesta-cheia-2026-10-01",
     "titulo": "Cesta Cheia",
     "descricao": "Jogo de cidadania em que os estudantes levam alimentos do Banco de Alimentos até as casas de um bairro, em três ruas, do amanhecer ao pôr do sol. A cada rua a cesta cresce e o tempo aperta, e a partida termina com orientações para doar de verdade.",
     "turma": [
+      "exploradores",
       "construtores",
       "inovadores",
-      "descobridores"
+      "descobridores",
+      "criadores",
+      "inventores",
+      "olimpica"
     ],
     "tipo": "atividade",
     "link": "cesta-cheia.html",
@@ -71,11 +92,7 @@ const RECURSOS = [
     "id": "oficina-de-maquinas-simples-2026-09-29",
     "titulo": "Oficina de Máquinas Simples",
     "descricao": "Laboratório 3D de blocos de montar com 42 peças e uma mesa ampliada de 24 x 24 pinos, que comporta centenas de blocos. Os estudantes constroem e testam alavanca, plano inclinado, polia, roda e eixo, cunha e parafuso, exploram mecanismos com motor (engrenagens, correia, sem-fim, came e biela) e programam um robô com sensor de distância. Inclui 14 missões com perguntas de reflexão. A construção fica salva no navegador.",
-    "turma": [
-      "construtores",
-      "inovadores",
-      "descobridores"
-    ],
+    "turma": "exploradores",
     "tipo": "atividade",
     "link": "oficina-maquinas-simples.html",
     "data": "2026-09-29",
@@ -119,7 +136,6 @@ const RECURSOS = [
     "titulo": "A Roda dos Segredos: Cifra de César",
     "descricao": "Atividade interativa em que as crianças giram um disco de letras para descobrir como Júlio César escondia mensagens e escrevem seus próprios recados secretos. Inclui o Desafio do Mensageiro, com 50 mensagens para decifrar.",
     "turma": [
-      "exploradores",
       "construtores",
       "inovadores"
     ],
