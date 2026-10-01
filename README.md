@@ -1,39 +1,45 @@
-# Robótica & Programação
+# Robótica | Colégio Santa Úrsula
 
-Repositório de recursos educacionais de Robótica e Programação, do 1º ano do Ensino Fundamental ao Ensino Médio.
+Site de recursos educacionais de Robótica do Colégio Santa Úrsula, organizado por turma.
 
-## Estrutura
+Endereço publicado: GitHub Pages deste repositório.
 
-```
-index.html          página principal
-css/estilo.css      cores, fontes e layout
-js/app.js           filtros, busca e cartões
-dados/recursos.js   catálogo de recursos (edite este arquivo)
-arquivos/           PDFs, apresentações e demais materiais
-assets/             símbolo e imagens do site
-```
+## Recursos publicados
+
+| Recurso | Tipo | Turmas | Arquivo |
+|---|---|---|---|
+| Cesta Cheia | Atividade (jogo de cidadania) | Construtores, Inovadores e Descobridores | `cesta-cheia.html` |
+| Oficina de Máquinas Simples | Atividade (laboratório 3D) | Construtores, Inovadores e Descobridores | `oficina-maquinas-simples.html` |
+| Manual de Programação do Robô Educacional | Apostila | Equipe Olímpica | `manual-robo-equipe-olimpica.html` |
+| A Roda dos Segredos: Cifra de César | Atividade | Exploradores, Construtores e Inovadores | `cifra-roda.html` e `cifra-desafio.html` |
+
+## Arquivos do site
+
+Todos os arquivos ficam na raiz do repositório.
+
+| Arquivo | Função |
+|---|---|
+| `index.html` | Página inicial |
+| `estilo.css` | Aparência (identidade verde do Colégio) |
+| `app.js` | Trilha de turmas, busca e cartões |
+| `recursos.js` | Catálogo de recursos |
+| `admin.html` | Área da equipe, para publicar sem editar código |
+| `guia-equipe.html` | Passo a passo para a equipe |
+| `simbolo.svg`, `logo-csu.png`, `logo-csu-branco.png` | Marca |
+| `.nojekyll` | Impede o GitHub de processar o site |
 
 ## Como publicar um novo recurso
 
-1. Coloque o material na pasta `arquivos/` (use nomes sem espaços nem acentos, por exemplo `sensor-ultrassonico.pdf`).
-2. Abra `dados/recursos.js`, copie um bloco `{ ... }`, cole no início da lista e altere os campos.
-3. Salve, faça o commit e envie:
+1. Pela **Área da equipe** (`admin.html`): entre com o token do GitHub, preencha o formulário e envie. Tudo é gravado em um único commit.
+2. Pelo **GitHub**: envie o arquivo do material em **Add file > Upload files** e acrescente um bloco no início da lista de `recursos.js`.
 
-```
-git add .
-git commit -m "Adiciona recurso: sensor ultrassônico"
-git push
-```
+Cada atividade interativa tem um botão **Voltar para a página inicial**. O progresso dos estudantes fica salvo apenas no navegador de cada computador.
 
-Em cerca de um minuto o site é atualizado.
+## Links por turma
 
-## Links com filtros
+Use `?turma=` com o código da turma para enviar o link já filtrado.
 
-É possível compartilhar a página já filtrada:
+- Anos Iniciais: `exploradores`, `construtores`, `inovadores`
+- Anos Finais: `descobridores`, `criadores`, `inventores`, `olimpica`
 
-- `?etapa=3-5` mostra apenas o 3º ao 5º ano
-- `?etapa=olimpica&tipo=codigo` mostra códigos da Equipe Olímpica
-- `?busca=arduino` abre com a busca preenchida
-
-Valores de `etapa`: `1-2`, `3-5`, `6-8`, `9-em`, `olimpica`.
-Valores de `tipo`: `plano`, `atividade`, `apostila`, `projeto`, `codigo`, `video`, `rubrica`, `apresentacao`.
+Exemplo: `?turma=inovadores`. A busca também aceita `?busca=doacao`.

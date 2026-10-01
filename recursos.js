@@ -44,6 +44,62 @@
 
 const RECURSOS = [
   {
+    "id": "cesta-cheia-2026-10-01",
+    "titulo": "Cesta Cheia",
+    "descricao": "Jogo de cidadania em que os estudantes levam alimentos do Banco de Alimentos até as casas de um bairro, em três ruas, do amanhecer ao pôr do sol. A cada rua a cesta cresce e o tempo aperta, e a partida termina com orientações para doar de verdade.",
+    "turma": [
+      "construtores",
+      "inovadores",
+      "descobridores"
+    ],
+    "tipo": "atividade",
+    "link": "cesta-cheia.html",
+    "data": "2026-10-01",
+    "duracao": "5 minutos por partida",
+    "etiquetas": [
+      "Cidadania",
+      "Solidariedade",
+      "Doação de alimentos",
+      "Segurança alimentar",
+      "Empatia",
+      "ODS 2",
+      "Jogo",
+      "Interativo"
+    ]
+  },
+  {
+    "id": "oficina-de-maquinas-simples-2026-09-29",
+    "titulo": "Oficina de Máquinas Simples",
+    "descricao": "Laboratório 3D de blocos de montar com 42 peças e uma mesa ampliada de 24 x 24 pinos, que comporta centenas de blocos. Os estudantes constroem e testam alavanca, plano inclinado, polia, roda e eixo, cunha e parafuso, exploram mecanismos com motor (engrenagens, correia, sem-fim, came e biela) e programam um robô com sensor de distância. Inclui 14 missões com perguntas de reflexão. A construção fica salva no navegador.",
+    "turma": [
+      "construtores",
+      "inovadores",
+      "descobridores"
+    ],
+    "tipo": "atividade",
+    "link": "oficina-maquinas-simples.html",
+    "data": "2026-09-29",
+    "etiquetas": [
+      "Máquinas simples",
+      "Alavanca",
+      "Plano inclinado",
+      "Polia",
+      "Roda e eixo",
+      "Cunha",
+      "Parafuso",
+      "Engrenagem",
+      "Correia",
+      "Came",
+      "Biela",
+      "Programação em blocos",
+      "Sensor",
+      "Robótica",
+      "Blocos de montar",
+      "3D",
+      "Interativo"
+    ]
+  },
+  {
     "id": "manual-de-programacao-do-robo-educacional-2026-09-23",
     "titulo": "Manual de Programação do Robô Educacional",
     "descricao": "Guia de estudo com as seis capacidades do robô, a estrutura do código em C++ para Arduino, documentação técnica comentada e um exemplo prático, acompanhado de autoavaliação de progresso.",
@@ -51,17 +107,37 @@ const RECURSOS = [
     "tipo": "apostila",
     "link": "manual-robo-equipe-olimpica.html",
     "data": "2026-09-23",
-    "etiquetas": ["Arduino", "C++", "Debounce", "Documentação técnica", "Autoavaliação"]
+    "etiquetas": [
+      "Arduino",
+      "C++",
+      "Debounce",
+      "Documentação técnica",
+      "Autoavaliação"
+    ]
   },
   {
-    titulo: "A Roda dos Segredos: Cifra de César",
-    descricao: "Atividade interativa em que as crianças giram um disco de letras para descobrir como Júlio César escondia mensagens e escrevem seus próprios recados secretos. Inclui o Desafio do Mensageiro, com 50 mensagens para decifrar.",
-    turma: ["exploradores", "construtores", "inovadores"],
-    tipo: "atividade",
-    link: "cifra-roda.html",
-    data: "2026-09-22",
-    duracao: "1 a 2 aulas",
-    etiquetas: ["Criptografia", "Cifra de César", "Segurança de dados", "Roma Antiga", "Interativo"],
-    extra: { rotulo: "Desafio do Mensageiro", link: "cifra-desafio.html" }
-  },
+    "titulo": "A Roda dos Segredos: Cifra de César",
+    "descricao": "Atividade interativa em que as crianças giram um disco de letras para descobrir como Júlio César escondia mensagens e escrevem seus próprios recados secretos. Inclui o Desafio do Mensageiro, com 50 mensagens para decifrar.",
+    "turma": [
+      "exploradores",
+      "construtores",
+      "inovadores"
+    ],
+    "tipo": "atividade",
+    "link": "cifra-roda.html",
+    "data": "2026-09-22",
+    "duracao": "1 a 2 aulas",
+    "etiquetas": [
+      "Criptografia",
+      "Cifra de César",
+      "Segurança de dados",
+      "Roma Antiga",
+      "Interativo"
+    ],
+    "extra": {
+      "rotulo": "Desafio do Mensageiro",
+      "link": "cifra-desafio.html"
+    },
+    "id": "a-roda-dos-segredos-cifra-de-cesar-2026-09-22"
+  }
 ];
