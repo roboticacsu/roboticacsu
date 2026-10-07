@@ -59,6 +59,8 @@
     <h1>Guia da equipe</h1>
     <p>Como obter acesso e publicar materiais no acervo de Robótica. A preparação é feita uma única vez; depois, cada publicação leva poucos minutos.</p>
 
+    <div class="nota"><strong>Onde fica o acervo.</strong> O site é publicado em <span class="caminho">roboticacsu.github.io/roboticacsu</span> e os arquivos ficam no repositório <span class="caminho">github.com/roboticacsu/roboticacsu</span>, da conta institucional. O painel já aponta para esse endereço.</div>
+
     <h2>Preparação (uma única vez)</h2>
     <ol class="etapas">
       <li>
@@ -81,7 +83,7 @@
           <li>No fim do menu lateral, clique em <span class="caminho">Developer settings</span>.</li>
           <li>Vá em <span class="caminho">Personal access tokens &gt; Tokens (classic)</span> e clique em <span class="caminho">Generate new token (classic)</span>.</li>
           <li>Em <span class="caminho">Note</span>, escreva <code>Acervo Robótica</code>. Em <span class="caminho">Expiration</span>, escolha <span class="caminho">90 days</span>.</li>
-          <li>Marque <strong>somente</strong> a opção <code>public_repo</code>.</li>
+          <li>Marque <strong>somente</strong> a opção <code>public_repo</code>. Se a opção <em>Tokens (classic)</em> não estiver disponível, use <em>Fine-grained tokens</em>, escolha o repositório <code>roboticacsu/roboticacsu</code> e conceda <em>Contents: Read and write</em>.</li>
           <li>Clique em <span class="caminho">Generate token</span> e copie a chave, que começa com <code>ghp_</code>. Ela só aparece uma vez.</li>
         </ul>
         <div class="nota nota--alerta"><strong>A chave é pessoal.</strong> Não a envie por mensagem nem a salve em documentos compartilhados. Se ela vazar, apague-a em <span class="caminho">Tokens (classic)</span> e gere outra.</div>
@@ -138,6 +140,7 @@
     <ol class="etapas">
       <li>
         <h3>Adicionar um professor</h3>
+        <p>Entre no GitHub com a conta institucional <code>roboticacsu</code> e abra <span class="caminho">github.com/roboticacsu/roboticacsu</span>.</p>
         <p>No repositório, vá em <span class="caminho">Settings &gt; Collaborators &gt; Add people</span>, digite o nome de usuário e envie o convite.</p>
       </li>
       <li>
@@ -149,6 +152,20 @@
         <p>Em <span class="caminho">Code &gt; Commits</span>, cada publicação aparece com a mensagem "Adiciona recurso", "Atualiza recurso" ou "Remove recurso", o autor e a data. Qualquer versão anterior pode ser consultada ou restaurada.</p>
       </li>
     </ol>
+
+    <h2>Se algo der errado</h2>
+    <div class="tabela">
+      <table>
+        <thead><tr><th>Mensagem</th><th>O que fazer</th></tr></thead>
+        <tbody>
+          <tr><td>Chave inválida ou expirada</td><td>Gere outra chave seguindo a preparação acima.</td></tr>
+          <tr><td>Repositório não encontrado</td><td>A chave precisa ser gerada por uma conta com acesso a <code>roboticacsu/roboticacsu</code>, com a permissão <code>public_repo</code>.</td></tr>
+          <tr><td>Sua conta ainda não tem permissão</td><td>Peça o convite ao administrador e aceite-o pelo e-mail do GitHub.</td></tr>
+          <tr><td>Erro de sintaxe em recursos.js</td><td>O administrador deve corrigir o arquivo no GitHub (vírgulas e aspas entre os blocos).</td></tr>
+          <tr><td>Publicou, mas o site não mudou</td><td>Aguarde 1 a 2 minutos, confira a aba <span class="caminho">Actions</span> do repositório e recarregue com <code>Ctrl + F5</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
 
     <p class="ir"><a class="botao" href="admin.html">Ir para a Área da equipe</a></p>
   </main>

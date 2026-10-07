@@ -232,7 +232,20 @@
   "use strict";
 
   /* ---------- Configuração ---------- */
-  var REPO = { dono: "professorgabrielferreira", nome: "roboticacsu", ramo: "main" };
+  /* Repositório institucional. Se o site estiver em <dono>.github.io/<repositório>,
+     o painel usa esse endereço automaticamente; em outro domínio, usa o padrão abaixo. */
+  var PADRAO = { dono: "roboticacsu", nome: "roboticacsu", ramo: "main" };
+  var REPO = detectarRepo();
+  function detectarRepo() {
+    var r = { dono: PADRAO.dono, nome: PADRAO.nome, ramo: PADRAO.ramo };
+    var h = location.hostname.toLowerCase();
+    if (/\.github\.io$/.test(h)) {
+      r.dono = h.replace(/\.github\.io$/, "");
+      var seg = location.pathname.split("/").filter(Boolean);
+      r.nome = (seg.length > 1 || (seg.length === 1 && seg[0].indexOf(".") === -1)) ? seg[0] : h;
+    }
+    return r;
+  }
   var ARQUIVO_DADOS = "recursos.js";
   var LIMITE_MB = 25;
 
@@ -324,6 +337,7 @@
     });
   }
   var base = "/repos/" + REPO.dono + "/" + REPO.nome;
+  var enderecoRepo = REPO.dono + "/" + REPO.nome;
 
   /* Lê o catálogo direto do repositório (sempre a versão mais recente) */
   function lerCatalogo(refCommit) {
@@ -331,8 +345,13 @@
       var fonte = base64ParaTexto(d.content);
       var inicio = fonte.indexOf("const RECURSOS");
       var cabecalho = inicio > -1 ? fonte.slice(0, inicio) : "";
-      var lista = new Function(fonte + "\n;return RECURSOS;")();
+      var lista;
+      try { lista = new Function(fonte + "\n;return RECURSOS;")(); }
+      catch (e) { throw new Error("o arquivo recursos.js do repositório tem um erro de sintaxe (" + e.message + "). Corrija-o no GitHub antes de usar o painel"); }
       return { cabecalho: cabecalho, lista: Array.isArray(lista) ? lista : [] };
+    }, function (e) {
+      if (e.status === 404) throw new Error("o arquivo recursos.js não foi encontrado na raiz de " + enderecoRepo + " (ramo " + REPO.ramo + ")");
+      throw e;
     });
   }
   function montarCatalogo(cabecalho, lista) {
@@ -372,33 +391,46 @@
   }
 
   /* ---------- Entrada ---------- */
+  function mensagemDeErro(e) {
+    var m = String(e.message || "");
+    if (e.status === 401) return "Chave inválida ou expirada. Gere uma nova chave seguindo o Guia da equipe.";
+    if (e.status === 404) return "O repositório <strong>" + esc(enderecoRepo) + "</strong> não foi encontrado com esta chave. Confira se a chave foi gerada na conta que tem acesso ao acervo e se a permissão <code>public_repo</code> está marcada (ou, em chave de acesso detalhada, <em>Contents: Read and write</em> para este repositório).";
+    if (e.status === 403) {
+      if (/rate limit/i.test(m)) return "O GitHub limitou temporariamente as solicitações. Aguarde alguns minutos e tente de novo.";
+      if (/saml|sso/i.test(m)) return "A organização exige autorização da chave. No GitHub, abra <em>Settings &gt; Developer settings &gt; Tokens (classic)</em> e use <em>Configure SSO &gt; Authorize</em>.";
+      return "O GitHub recusou a operação: " + esc(m) + ". Verifique as permissões da chave.";
+    }
+    if (e.status === 409) return "O repositório está vazio ou em conflito. Envie ao menos um arquivo pelo GitHub antes de usar o painel.";
+    if (e.status === 422) return "O GitHub não aceitou a alteração (" + esc(m) + "). Tente novamente em instantes.";
+    if (e instanceof TypeError) return "Sem conexão com o GitHub. Verifique a internet e tente de novo.";
+    return esc(m);
+  }
+
   function entrar(chave) {
     token = chave.trim();
-    status("statusLogin", "info", "Verificando acesso...");
+    status("statusLogin", "info", "Verificando acesso a " + esc(enderecoRepo) + "...");
     var usuario;
     return api("/user")
       .then(function (u) { usuario = u; return api(base); })
       .then(function (repo) {
+        if (repo.default_branch) REPO.ramo = repo.default_branch;
         if (!repo.permissions || !repo.permissions.push) {
-          throw new Error("Sua conta ainda não tem permissão para publicar neste acervo. Peça ao administrador para adicioná-la como colaboradora e aceite o convite enviado por e-mail.");
+          throw new Error("Sua conta (" + usuario.login + ") ainda não tem permissão para publicar em " + enderecoRepo + ". Peça ao administrador para adicioná-la como colaboradora e aceite o convite enviado por e-mail.");
         }
         var guardar = $("lembrar").checked ? localStorage : sessionStorage;
         try { guardar.setItem("roboticacsu:token", token); } catch (e) {}
-        $("saudacao").innerHTML = "Conectado como <strong>" + esc(usuario.name || usuario.login) + "</strong>";
+        $("saudacao").innerHTML = "Conectado como <strong>" + esc(usuario.name || usuario.login) + "</strong> em " + esc(enderecoRepo);
         if (!$("fAutor").value && usuario.name) $("fAutor").dataset.padrao = usuario.name;
-        $("telaLogin").hidden = true;
-        $("telaPainel").hidden = false;
-        status("statusLogin", "", "");
-        return recarregar();
+        return recarregar().then(function () {
+          $("telaLogin").hidden = true;
+          $("telaPainel").hidden = false;
+          status("statusLogin", "", "");
+        });
       })
       .catch(function (e) {
         token = null;
-        var msg = e.status === 401
-          ? "Chave inválida ou expirada. Gere uma nova chave seguindo o Guia da equipe."
-          : e.status === 404
-            ? "Acervo não encontrado para esta chave. Confira se a chave tem a permissão public_repo marcada."
-            : esc(e.message);
-        status("statusLogin", "erro", msg);
+        try { localStorage.removeItem("roboticacsu:token"); sessionStorage.removeItem("roboticacsu:token"); } catch (x) {}
+        status("statusLogin", "erro", mensagemDeErro(e));
       });
   }
 
@@ -517,7 +549,7 @@
       catalogo = lista; desenharLista();
       if (editando === chave) limparFormulario();
       status("statusForm", "ok", "Recurso retirado. O site será atualizado em 1 a 2 minutos.");
-    }).catch(function (e) { status("statusForm", "erro", "Não foi possível excluir: " + esc(e.message)); });
+    }).catch(function (e) { status("statusForm", "erro", "Não foi possível excluir: " + mensagemDeErro(e)); });
   }
 
   function validar() {
@@ -602,7 +634,7 @@
       limparFormulario();
       status("statusForm", "ok", "Publicado. O site será atualizado em 1 a 2 minutos. <a href=\"index.html\">Ver página inicial</a>");
     }).catch(function (e) {
-      status("statusForm", "erro", "Não foi possível publicar: " + esc(e.message) + ". Nada foi alterado no site; tente novamente.");
+      status("statusForm", "erro", "Não foi possível publicar: " + mensagemDeErro(e) + " Nada foi alterado no site; tente novamente.");
     }).then(function () { $("publicar").disabled = false; });
   });
 
