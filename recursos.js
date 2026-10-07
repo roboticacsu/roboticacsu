@@ -70,12 +70,11 @@ const RECURSOS = [
       "inovadores",
       "descobridores",
       "criadores",
-      "inventores",
-      "olimpica"
+      "inventores"
     ],
     "tipo": "atividade",
-    "link": "cesta-cheia.html",
     "data": "2026-10-01",
+    "link": "cesta-cheia.html",
     "duracao": "5 minutos por partida",
     "etiquetas": [
       "Cidadania",
