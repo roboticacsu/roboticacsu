@@ -44,6 +44,15 @@
 
 const RECURSOS = [
   {
+    "id": "teste-2026-10-07",
+    "titulo": "Teste",
+    "descricao": "TEste",
+    "turma": "olimpica",
+    "tipo": "atividade",
+    "data": "2026-10-07",
+    "link": "arquivos/teste-2026-10-07/desenhos-cinema.pdf"
+  },
+  {
     "id": "elevator-saga-2026-10-01",
     "titulo": "Elevator Saga",
     "descricao": "O Elevator Saga é um jogo em que o estudante escreve código em JavaScript para controlar elevadores em um prédio virtual. A cada desafio, é preciso transportar certo número de pessoas dentro de um limite de tempo ou de movimentos. Os desafios ficam progressivamente mais difíceis, com mais andares, mais elevadores e metas mais exigentes.",
