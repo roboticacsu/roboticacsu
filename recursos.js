@@ -92,10 +92,10 @@ const RECURSOS = [
     "id": "oficina-de-maquinas-simples-2026-09-29",
     "titulo": "Oficina de Máquinas Simples",
     "descricao": "Laboratório 3D de blocos de montar com 42 peças e uma mesa ampliada de 24 x 24 pinos, que comporta centenas de blocos. Os estudantes constroem e testam alavanca, plano inclinado, polia, roda e eixo, cunha e parafuso, exploram mecanismos com motor (engrenagens, correia, sem-fim, came e biela) e programam um robô com sensor de distância. Inclui 14 missões com perguntas de reflexão. A construção fica salva no navegador.",
-    "turma": "exploradores",
+    "turma": "construtores",
     "tipo": "atividade",
-    "link": "oficina-maquinas-simples.html",
     "data": "2026-09-29",
+    "link": "oficina-maquinas-simples.html",
     "etiquetas": [
       "Máquinas simples",
       "Alavanca",
