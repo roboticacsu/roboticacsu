@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Batalha Naval | Robótica</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23005835'/%3E%3Cpath d='M10 38h44l-8 12H18z' fill='%23fff'/%3E%3Crect x='24' y='24' width='16' height='14' fill='%23fff'/%3E%3Crect x='30' y='14' width='4' height='10' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&family=Poppins:ital,wght@0,600;0,700;1,800&display=swap" rel="stylesheet">
+<script>
+(function () {
+  try {
+    var c = JSON.parse(localStorage.getItem('roboticacsu:batalha-naval:config')) || {};
+    var t = c.tema || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
+    document.documentElement.setAttribute('data-tema', t);
+  } catch (e) { document.documentElement.setAttribute('data-tema', 'claro'); }
+})();
+</script>
+<style>
+  :root, [data-tema="claro"] {
+    color-scheme: light;
+    --fundo: #E6F3FA; --painel: #FFFFFF; --linha: #B9D6E8; --texto: #0B2A4A; --suave: #46607A;
+    --cab1: #0B4F8A; --cab2: #1769B0; --titulo: #0B4F8A;
+    --acao: #0B4F8A; --acao-hover: #DDF0F8; --sel-bg: #DDF0F8; --sel-borda: #0B4F8A;
+    --prim-bg: #FFC22E; --prim-fg: #0B2A4A; --prim-sombra: #C98F00; --prim-hover: #FFD257;
+    --status-eu: #0B7A88; --status-pc: #0B4F8A; --status-fim: #072F57;
+    --agua: #BFE7F6; --agua-linha: #7DBBD9; --moldura: #0B4F8A;
+    --navio: #4A5B6B; --detalhe: #FFFFFF; --acento: #E4572E; --afundado: #9C2F2F;
+    --chip: #F0F8FC; --acerto-bg: #FFEFE5; --nota: #FFF4CC; --ativa: #FFE08A; --perigo: #C0392B; --foco: #0B7FC4;
+    --sombra: 0 3px 0 rgba(11,79,138,.18);
+  }
+  [data-tema="escuro"] {
+    color-scheme: dark;
+    --fundo: #08172B; --painel: #10264A; --linha: #2A4A78; --texto: #EAF3FB; --suave: #A7BFD8;
+    --cab1: #072F57; --cab2: #0E5A96; --titulo: #8FD0FF;
+    --acao: #8FD0FF; --acao-hover: #1B3A66; --sel-bg: #17406F; --sel-borda: #8FD0FF;
+    --prim-bg: #FFC22E; --prim-fg: #0B2A4A; --prim-sombra: #C98F00; --prim-hover: #FFD257;
+    --status-eu: #0B7A88; --status-pc: #174A80; --status-fim: #061D36;
+    --agua: #12456E; --agua-linha: #2F6E9C; --moldura: #6DB8EC;
+    --navio: #D3E1EE; --detalhe: #0A1B33; --acento: #FF7A59; --afundado: #FF8A80;
+    --chip: #17335C; --acerto-bg: #3A2630; --nota: #223B5E; --ativa: #5A4A12; --perigo: #FF8A80; --foco: #8FD0FF;
+    --sombra: 0 3px 0 rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; min-height: 100%; }
+  body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; color: var(--texto); background: var(--fundo); -webkit-tap-highlight-color: transparent; transition: background .25s, color .25s; }
+  h1, h2, h3 { font-family: 'Fredoka', 'Poppins', 'Segoe UI', system-ui, sans-serif; margin: 0; line-height: 1.2; }
+  button { font: inherit; cursor: pointer; touch-action: manipulation; }
+  :focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+  svg.ic { width: 1.2em; height: 1.2em; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ---------- topo, com bandeirinhas de sinalização ---------- */
+  .topo { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: linear-gradient(135deg, var(--cab1), var(--cab2)); color: #fff; position: sticky; top: 0; z-index: 10; margin-bottom: 14px; }
+  .topo::after { content: ''; position: absolute; left: 0; right: 0; bottom: -15px; height: 16px; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 16'%3E%3Cpath d='M0 1.5h96' stroke='%23FFFFFF' stroke-opacity='.7' stroke-width='2'/%3E%3Cpath d='M2 2h20l-10 14z' fill='%23E4572E'/%3E%3Cpath d='M26 2h20L36 16z' fill='%23FFC22E'/%3E%3Cpath d='M50 2h20L60 16z' fill='%23FFFFFF'/%3E%3Cpath d='M74 2h20L84 16z' fill='%2312A3B4'/%3E%3C/svg%3E"); background-size: 96px 16px; background-repeat: repeat-x; }
+  .voltar, .btn-topo { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 8px 14px; border-radius: 999px; border: 2px solid rgba(255,255,255,.55); background: transparent; color: #fff; font-weight: 600; font-size: .9rem; text-decoration: none; white-space: nowrap; }
+  .voltar:hover, .btn-topo:hover { background: rgba(255,255,255,.16); }
+  .btn-reset { background: #FFC22E; color: #0B2A4A; border-color: #FFC22E; }
+  .btn-reset:hover { background: #FFD257; }
+  .topo__titulo { flex: 1; min-width: 0; }
+  .titulo-jogo { font-family: 'Poppins', sans-serif; font-style: italic; font-weight: 800; font-size: clamp(1.15rem, 3.4vw, 1.7rem); letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+  .topo__titulo small { display: block; font-size: .75rem; opacity: .9; }
+  .topo__acoes { display: flex; gap: 8px; }
+
+  /* ---------- estrutura ---------- */
+  main { max-width: 1120px; margin: 0 auto; padding: 18px 16px 40px; }
+  .bloco { background: var(--painel); border: 2px solid var(--linha); border-radius: 18px; padding: 16px; box-shadow: var(--sombra); }
+  .bloco h2 { font-size: 1.15rem; color: var(--titulo); margin-bottom: 4px; }
+  .sub { margin: 0 0 10px; font-size: .88rem; color: var(--suave); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 10px 20px; border-radius: 14px; border: 2px solid var(--acao); background: var(--painel); color: var(--acao); font-family: 'Fredoka', 'Inter', sans-serif; font-weight: 600; font-size: 1rem; }
+  .btn:hover { background: var(--acao-hover); }
+  .btn--primario { background: var(--prim-bg); color: var(--prim-fg); border-color: var(--prim-bg); box-shadow: 0 4px 0 var(--prim-sombra); }
+  .btn--primario:hover { background: var(--prim-hover); }
+  .btn--primario:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--prim-sombra); }
+  .btn[disabled] { opacity: .45; cursor: not-allowed; box-shadow: none; }
+  .btn--perigo { border-color: var(--perigo); color: var(--perigo); background: var(--painel); box-shadow: none; }
+  .btn--perigo:hover { background: var(--acerto-bg); }
+
+  /* ---------- configuração ---------- */
+  .config { display: grid; gap: 16px; max-width: 800px; margin: 0 auto; }
+  .opcoes { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 8px; }
+  .opcoes--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .opcao { text-align: left; border: 2px solid var(--linha); background: var(--painel); border-radius: 14px; padding: 12px 14px; color: var(--texto); }
+  .opcao:hover { border-color: var(--sel-borda); }
+  .opcao[aria-checked="true"] { border-color: var(--sel-borda); background: var(--sel-bg); box-shadow: inset 0 0 0 1px var(--sel-borda); }
+  .opcao strong { display: block; font-family: 'Fredoka', sans-serif; font-size: 1.05rem; }
+  .opcao span { display: block; font-size: .85rem; color: var(--suave); margin-top: 2px; }
+  .opcao .tag { color: var(--titulo); font-weight: 600; }
+  .frota-edit { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+  .frota-edit li { display: grid; grid-template-columns: 140px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 12px; border: 2px solid var(--linha); border-radius: 14px; background: var(--painel); }
+  .frota-edit .mini { color: var(--navio); height: 24px; }
+  .frota-edit .nome { font-weight: 600; }
+  .frota-edit small { color: var(--suave); font-weight: 400; }
+  .passo { display: flex; align-items: center; gap: 8px; }
+  .passo button { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--acao); background: var(--painel); color: var(--acao); font-family: 'Fredoka', sans-serif; font-size: 1.5rem; font-weight: 700; line-height: 1; display: grid; place-items: center; padding: 0; }
+  .passo button:hover { background: var(--acao-hover); }
+  .passo button[disabled] { opacity: .35; cursor: not-allowed; }
+  .passo output { min-width: 2ch; text-align: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.4rem; }
+  .resumo-frota { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--nota); font-weight: 600; line-height: 1.4; }
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .presets .btn { min-height: 40px; padding: 6px 14px; font-size: .9rem; }
+
+  /* ---------- tabuleiro ---------- */
+  .tabuleiro { --lab: 1.7rem; display: grid; grid-template-columns: var(--lab) minmax(0, 1fr); grid-template-rows: var(--lab) auto; width: 100%; max-width: 520px; margin: 0 auto; }
+  .cols, .lins { display: grid; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: clamp(.75rem, 2.3vw, 1rem); color: var(--titulo); }
+  .cols { grid-column: 2; grid-template-columns: repeat(var(--n), 1fr); }
+  .lins { grid-row: 2; grid-template-rows: repeat(var(--n), 1fr); }
+  .cols span, .lins span { display: grid; place-items: center; }
+  .area { grid-column: 2; grid-row: 2; position: relative; aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(var(--n), 1fr); grid-template-rows: repeat(var(--n), 1fr);
+    background-color: var(--agua); border: 3px solid var(--moldura); border-radius: 10px; overflow: hidden;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23A9D3E6' stroke-width='5' stroke-linecap='round'%3E%3Ccircle cx='50' cy='22' r='9'/%3E%3Cpath d='M50 31v52M32 44h36M20 62c2 18 16 28 30 28s28-10 30-28M20 62l-8 6M80 62l8 6'/%3E%3C/g%3E%3C/svg%3E"); background-size: 70% 70%; background-position: center; background-repeat: no-repeat; }
+  [data-tema="escuro"] .area { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%232C6595' stroke-width='5' stroke-linecap='round'%3E%3Ccircle cx='50' cy='22' r='9'/%3E%3Cpath d='M50 31v52M32 44h36M20 62c2 18 16 28 30 28s28-10 30-28M20 62l-8 6M80 62l8 6'/%3E%3C/g%3E%3C/svg%3E"); }
+  .celula { position: relative; z-index: 2; display: block; padding: 0; border: 0; border-right: 1px solid var(--agua-linha); border-bottom: 1px solid var(--agua-linha); background: transparent; min-width: 0; min-height: 0; }
+  button.celula { cursor: pointer; }
+  button.celula:hover { background: rgba(255,255,255,.4); }
+  [data-tema="escuro"] button.celula:hover { background: rgba(143,208,255,.22); }
+  button.celula:focus-visible { outline: 3px solid var(--foco); outline-offset: -3px; background: rgba(255,255,255,.5); }
+  .celula[aria-disabled="true"] { cursor: default; }
+  .celula[aria-disabled="true"]:hover { background: transparent; }
+  .celula.fan-ok { background: rgba(18,163,180,.5) !important; }
+  .celula.fan-no { background: rgba(228,87,46,.5) !important; }
+  .marca { position: absolute; inset: 14%; pointer-events: none; }
+  .marca svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .m-agua circle { fill: #fff; stroke: var(--moldura); stroke-width: 8; }
+  .m-boom { inset: 4%; }
+  .m-boom polygon { fill: #FFC22E; stroke: #E4572E; stroke-width: 5; stroke-linejoin: round; }
+  .m-boom circle { fill: #E4572E; }
+  .marca.nova { animation: pop .45s ease-out; }
+  @keyframes pop { 0% { transform: scale(.2); opacity: 0; } 60% { transform: scale(1.25); } 100% { transform: scale(1); opacity: 1; } }
+  .navios { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .navio { position: absolute; color: var(--navio); }
+  .navio svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .navio--afundado { color: var(--afundado); --acento: #FFC22E; }
+  .navio--revelado { opacity: .55; }
+
+  /* ---------- posicionamento ---------- */
+  .layout-pos { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+  .bandeja { display: grid; gap: 8px; margin: 10px 0 14px; }
+  .item-navio { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; text-align: left; padding: 10px 12px; border: 2px solid var(--linha); border-radius: 14px; background: var(--painel); color: var(--texto); }
+  .item-navio:hover:not([disabled]) { border-color: var(--sel-borda); }
+  .item-navio[aria-pressed="true"] { border-color: var(--sel-borda); background: var(--sel-bg); }
+  .item-navio[disabled] { opacity: .5; cursor: default; background: var(--chip); }
+  .item-navio .nome { font-weight: 600; }
+  .item-navio small { color: var(--suave); font-weight: 400; }
+  .item-navio .qtd { font-family: 'Fredoka', sans-serif; font-weight: 700; color: var(--titulo); }
+  .item-navio .mini { grid-column: 1 / -1; color: var(--navio); }
+  .mini { display: block; height: 26px; }
+  .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dica { font-size: .88rem; color: var(--suave); margin: 12px 0 0; line-height: 1.45; }
+
+  /* ---------- batalha ---------- */
+  .status { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; border-radius: 16px; background: var(--status-eu); color: #fff; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 1.05rem; margin-bottom: 14px; box-shadow: var(--sombra); }
+  .status.vez-pc { background: var(--status-pc); }
+  .status.fim { background: var(--status-fim); }
+  .duplo { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .baixo { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 16px; align-items: start; }
+  .frota-status { margin-top: 12px; }
+  .frota-status h3 { font-size: .9rem; color: var(--suave); font-family: 'Inter', sans-serif; font-weight: 600; margin-bottom: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+  .chip { display: inline-flex; align-items: center; color: var(--navio); padding: 3px 6px; border-radius: 8px; background: var(--chip); border: 1px solid var(--linha); }
+  .chip svg { height: 18px; display: block; }
+  .chip.afundado { color: var(--afundado); opacity: .75; text-decoration: line-through; background: var(--acerto-bg); }
+  .log { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 300px; overflow-y: auto; }
+  .log li { padding: 8px 10px; border-radius: 10px; background: var(--chip); border-left: 5px solid var(--linha); font-size: .92rem; line-height: 1.35; }
+  .log li.eu { border-left-color: var(--status-eu); }
+  .log li.pc { border-left-color: var(--moldura); }
+  .log li.acerto { background: var(--acerto-bg); }
+  .log li small { display: block; color: var(--suave); margin-top: 2px; font-style: italic; }
+  .pensa details { margin-top: 6px; }
+  .pensa summary { cursor: pointer; font-weight: 600; color: var(--titulo); }
+  .pensa ol { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 8px; font-size: .92rem; line-height: 1.4; }
+  .pensa li.ativa { background: var(--ativa); border-radius: 8px; padding: 4px 8px; margin-left: -8px; }
+  .pensa b { color: var(--titulo); }
+
+  /* ---------- janelas ---------- */
+  .cortina { position: fixed; inset: 0; z-index: 30; background: rgba(4,20,40,.7); display: grid; place-items: center; padding: 16px; }
+  .janela { background: var(--painel); color: var(--texto); border: 2px solid var(--linha); border-radius: 22px; padding: 24px; width: min(560px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+  .janela h2 { font-size: 1.6rem; color: var(--titulo); margin-bottom: 12px; }
+  .janela p { margin: 0 0 12px; line-height: 1.5; }
+  .janela ol, .janela ul { margin: 0 0 14px; padding-left: 22px; line-height: 1.5; display: grid; gap: 6px; }
+  .janela__acoes { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+  .resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 14px; }
+  .resumo div { background: var(--chip); border-radius: 12px; padding: 10px; text-align: center; }
+  .resumo strong { display: block; font-family: 'Fredoka', sans-serif; font-size: 1.5rem; color: var(--titulo); }
+  .resumo span { font-size: .8rem; color: var(--suave); }
+  .pense { background: var(--nota); border-radius: 12px; padding: 12px 14px; }
+
+  @media (max-width: 900px) {
+    .layout-pos { grid-template-columns: minmax(0, 1fr); }
+    .duplo, .baixo { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .voltar span, .btn-topo span { display: none; }
+    .voltar, .btn-topo { padding: 8px; min-width: 42px; justify-content: center; }
+    .topo { padding: 10px; gap: 8px; }
+    .topo__acoes { gap: 6px; }
+    .titulo-jogo { font-size: 1rem; letter-spacing: 0; }
+    .opcoes, .opcoes--3 { grid-template-columns: minmax(0, 1fr); }
+    .frota-edit li { grid-template-columns: minmax(0, 1fr) auto; }
+    .frota-edit .mini-wrap { grid-column: 1 / -1; grid-row: 2; }
+    main { padding: 12px 10px 32px; }
+    .resumo strong { font-size: 1.2rem; }
+  }
+  @media (max-width: 1080px) {
+    .voltar span, .btn-topo span { display: none; }
+    .voltar, .btn-topo { padding: 8px; min-width: 42px; justify-content: center; }
+  }
+  @media (max-width: 520px) {
+    .topo { flex-wrap: wrap; position: relative; }
+    .voltar { order: 1; }
+    .topo__titulo { order: 2; flex: 1 1 150px; }
+    .topo__acoes { order: 3; flex: 1 1 100%; justify-content: space-between; }
+    .titulo-jogo { font-size: 1.15rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .marca.nova { animation: none; } body { transition: none; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="nv-submarino" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="64" rx="42" ry="16" fill="currentColor"/>
+      <rect x="14" y="63" width="72" height="5" rx="2" style="fill:var(--acento,#E4572E)"/>
+      <rect x="35" y="36" width="28" height="28" rx="6" fill="currentColor"/>
+      <rect x="49" y="20" width="4" height="18" fill="currentColor"/>
+      <rect x="49" y="20" width="13" height="4" fill="currentColor"/>
+      <rect x="88" y="54" width="7" height="20" rx="2" fill="currentColor"/>
+      <circle cx="28" cy="64" r="3.5" style="fill:var(--detalhe,#fff)" opacity=".6"/><circle cx="72" cy="64" r="3.5" style="fill:var(--detalhe,#fff)" opacity=".6"/>
+      <rect x="40" y="44" width="18" height="4" style="fill:var(--detalhe,#fff)" opacity=".55"/>
+    </symbol>
+    <symbol id="nv-fragata" viewBox="0 0 200 100">
+      <path d="M6 54 L32 84 L182 84 Q192 84 196 72 L198 54 Z" fill="currentColor"/>
+      <rect x="36" y="76" width="146" height="5" rx="2" style="fill:var(--acento,#E4572E)"/>
+      <rect x="82" y="34" width="56" height="20" rx="3" fill="currentColor"/>
+      <rect x="98" y="22" width="24" height="12" rx="2" fill="currentColor"/>
+      <rect x="108" y="6" width="4" height="17" fill="currentColor"/>
+      <rect x="38" y="44" width="22" height="10" rx="3" fill="currentColor"/>
+      <rect x="58" y="46" width="22" height="4" fill="currentColor"/>
+      <rect x="150" y="40" width="18" height="14" rx="2" fill="currentColor"/>
+      <rect x="90" y="40" width="40" height="4" style="fill:var(--detalhe,#fff)" opacity=".55"/>
+      <rect x="40" y="70" width="130" height="3" style="fill:var(--detalhe,#fff)" opacity=".35"/>
+    </symbol>
+    <symbol id="nv-cruzador" viewBox="0 0 300 100">
+      <path d="M6 56 L36 86 L268 86 Q284 86 290 72 L294 56 Z" fill="currentColor"/>
+      <rect x="44" y="78" width="218" height="5" rx="2" style="fill:var(--acento,#E4572E)"/>
+      <rect x="118" y="34" width="64" height="22" rx="3" fill="currentColor"/>
+      <rect x="136" y="20" width="28" height="14" rx="2" fill="currentColor"/>
+      <rect x="148" y="3" width="4" height="18" fill="currentColor"/>
+      <rect x="46" y="46" width="28" height="10" rx="3" fill="currentColor"/>
+      <rect x="72" y="48" width="26" height="4" fill="currentColor"/>
+      <rect x="206" y="38" width="22" height="18" rx="2" fill="currentColor"/>
+      <rect x="244" y="46" width="24" height="10" rx="3" fill="currentColor"/>
+      <rect x="126" y="40" width="48" height="4" style="fill:var(--detalhe,#fff)" opacity=".55"/>
+      <rect x="50" y="72" width="200" height="3" style="fill:var(--detalhe,#fff)" opacity=".35"/>
+    </symbol>
+    <symbol id="nv-encouracado" viewBox="0 0 400 100">
+      <path d="M6 58 L40 88 L356 88 Q382 88 390 74 L394 58 Z" fill="currentColor"/>
+      <rect x="54" y="80" width="292" height="5" rx="2" style="fill:var(--acento,#E4572E)"/>
+      <rect x="166" y="30" width="72" height="28" rx="3" fill="currentColor"/>
+      <rect x="184" y="16" width="36" height="14" rx="2" fill="currentColor"/>
+      <rect x="200" y="2" width="4" height="15" fill="currentColor"/>
+      <rect x="50" y="46" width="34" height="12" rx="4" fill="currentColor"/>
+      <rect x="82" y="49" width="30" height="4" fill="currentColor"/>
+      <rect x="100" y="48" width="30" height="10" rx="4" fill="currentColor"/>
+      <rect x="128" y="50" width="26" height="4" fill="currentColor"/>
+      <rect x="300" y="46" width="34" height="12" rx="4" fill="currentColor"/>
+      <rect x="332" y="49" width="30" height="4" fill="currentColor"/>
+      <rect x="250" y="36" width="20" height="22" rx="2" fill="currentColor"/>
+      <rect x="276" y="40" width="16" height="18" rx="2" fill="currentColor"/>
+      <rect x="176" y="38" width="52" height="4" style="fill:var(--detalhe,#fff)" opacity=".55"/>
+      <rect x="176" y="46" width="52" height="4" style="fill:var(--detalhe,#fff)" opacity=".55"/>
+      <rect x="60" y="74" width="280" height="3" style="fill:var(--detalhe,#fff)" opacity=".35"/>
+    </symbol>
+    <symbol id="nv-portaavioes" viewBox="0 0 500 100">
+      <path d="M24 60 L60 90 L448 90 Q474 90 484 74 L488 60 Z" fill="currentColor"/>
+      <rect x="70" y="82" width="372" height="5" rx="2" style="fill:var(--acento,#E4572E)"/>
+      <path d="M4 50 L496 50 L488 60 L24 60 Z" fill="currentColor"/>
+      <rect x="336" y="26" width="44" height="24" rx="3" fill="currentColor"/>
+      <rect x="346" y="14" width="22" height="12" rx="2" fill="currentColor"/>
+      <rect x="355" y="2" width="4" height="13" fill="currentColor"/>
+      <rect x="348" y="4" width="18" height="3" fill="currentColor"/>
+      <path d="M110 50 l8 -11 h6 l-4 11z M170 50 l8 -11 h6 l-4 11z M230 50 l8 -11 h6 l-4 11z" fill="currentColor"/>
+      <rect x="106" y="43" width="24" height="3" fill="currentColor"/><rect x="166" y="43" width="24" height="3" fill="currentColor"/><rect x="226" y="43" width="24" height="3" fill="currentColor"/>
+      <rect x="40" y="54" width="430" height="2" style="fill:var(--detalhe,#fff)" opacity=".6"/>
+      <rect x="346" y="32" width="24" height="4" style="fill:var(--detalhe,#fff)" opacity=".55"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="topo">
+  <a class="voltar" id="voltar" href="index.html" aria-label="Voltar para a página inicial">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span>Voltar para a página inicial</span>
+  </a>
+  <div class="topo__titulo">
+    <h1 class="titulo-jogo">Batalha Naval</h1>
+    <small>Robótica</small>
+  </div>
+  <div class="topo__acoes">
+    <button class="btn-topo" id="btnRegras" type="button" aria-label="Regras do jogo">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Regras</span>
+    </button>
+    <button class="btn-topo" id="btnTema" type="button" aria-pressed="false" aria-label="Mudar para o modo escuro">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true" id="temaIcone"></svg>
+      <span id="temaTexto">Escuro</span>
+    </button>
+    <button class="btn-topo" id="btnSom" type="button" aria-pressed="true" aria-label="Som ligado">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path id="somOnda" d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+      <span id="somTexto">Som</span>
+    </button>
+    <button class="btn-topo btn-reset" id="btnReset" type="button" aria-label="Recomeçar do zero">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      <span>Recomeçar</span>
+    </button>
+  </div>
+</header>
+
+<main id="palco"></main>
+
+<div class="cortina" id="janelaRegras" hidden>
+  <div class="janela" role="dialog" aria-modal="true" aria-labelledby="tRegras">
+    <h2 id="tRegras">Regras da Batalha Naval</h2>
+    <ol>
+      <li>No início, você escolhe o nível (o tamanho da grade) e quantos navios de cada tipo vão jogar. O computador usa a mesma frota.</li>
+      <li>Cada jogador tem uma frota em uma grade com colunas de letras e linhas de números. Ninguém vê a frota do outro.</li>
+      <li>Os navios ficam em linha reta, na horizontal ou na vertical, sem se sobrepor e sem diagonais. Eles podem ficar encostados.</li>
+      <li>Os jogadores se alternam, com uma jogada por vez. Em cada jogada, diz-se uma coordenada, como <b>E5</b>.</li>
+      <li>Quem recebe a jogada responde: <b>água</b>, <b>acertou</b> ou <b>afundou</b> o navio. O navio só afunda quando todas as suas casas foram atingidas.</li>
+      <li>Vence quem afundar primeiro todos os navios do adversário.</li>
+    </ol>
+    <p class="pense"><b>Pense:</b> depois de um acerto, qual é a melhor casa para testar em seguida? O que a resposta "água" ensina sobre onde os navios não estão?</p>
+    <div class="janela__acoes"><button class="btn btn--primario" id="btnRegrasFechar" type="button">Entendi</button></div>
+  </div>
+</div>
+
+<div class="cortina" id="janelaReset" hidden>
+  <div class="janela" role="alertdialog" aria-modal="true" aria-labelledby="tReset">
+    <h2 id="tReset">Recomeçar do zero?</h2>
+    <p>A partida atual será apagada e você voltará à escolha do nível.</p>
+    <div class="janela__acoes">
+      <button class="btn" id="btnResetNao" type="button">Não, continuar</button>
+      <button class="btn btn--primario btn--perigo" id="btnResetSim" type="button">Sim, recomeçar</button>
+    </div>
+  </div>
+</div>
+
+<div class="cortina" id="janelaFim" hidden>
+  <div class="janela" role="dialog" aria-modal="true" aria-labelledby="tFim">
+    <h2 id="tFim"></h2>
+    <p id="fimTexto"></p>
+    <div class="resumo" id="fimResumo"></div>
+    <p class="pense" id="fimPense"></p>
+    <div class="janela__acoes">
+      <button class="btn" id="fimVer" type="button">Ver os tabuleiros</button>
+      <button class="btn btn--primario" id="fimNovo" type="button">Jogar de novo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   Batalha Naval: dados do jogo
+   ===================================================================== */
+const KEY = 'roboticacsu:batalha-naval';
+const KEY_CFG = KEY + ':config';
+const LETRAS = 'ABCDEFGHIJ';
+
+const NAVIOS = {
+  submarino:   { nome: 'Submarino',    plural: 'Submarinos',    tam: 1 },
+  fragata:     { nome: 'Fragata',      plural: 'Fragatas',      tam: 2 },
+  cruzador:    { nome: 'Cruzador',     plural: 'Cruzadores',    tam: 3 },
+  encouracado: { nome: 'Encouraçado',  plural: 'Encouraçados',  tam: 4 },
+  portaavioes: { nome: 'Porta-aviões', plural: 'Porta-aviões',  tam: 5 }
+};
+const ORDEM = ['portaavioes', 'encouracado', 'cruzador', 'fragata', 'submarino'];
+
+const NIVEIS = [
+  { id: 'iniciante',     nome: 'Iniciante',                n: 6,  frota: { cruzador: 1, fragata: 2, submarino: 3 } },
+  { id: 'intermediario', nome: 'Intermediário',                n: 8,  frota: { encouracado: 1, cruzador: 2, fragata: 2, submarino: 3 } },
+  { id: 'classico',      nome: 'Clássico', n: 10, frota: { portaavioes: 1, encouracado: 1, cruzador: 2, fragata: 1 } },
+  { id: 'completo',      nome: 'Frota completa', n: 10, frota: { portaavioes: 2, encouracado: 3, cruzador: 4, fragata: 5, submarino: 8 } }
+];
+const ESTRATEGIAS = [
+  { id: 'aleatorio',  nome: 'Aleatório',          desc: 'Escolhe qualquer casa que ainda não testou.' },
+  { id: 'caca',       nome: 'Caça e perseguição', desc: 'Depois de um acerto, testa as casas vizinhas.' },
+  { id: 'calculista', nome: 'Calculista',         desc: 'Conta as formas de encaixe e escolhe a casa mais provável.' }
+];
+
+const LIMITE_OCUPACAO = 0.55, MAX_POR_TIPO = 12;
+const capacidade = (n) => Math.floor(n * n * LIMITE_OCUPACAO);
+const celulasFrota = (f) => ORDEM.reduce((a, t) => a + (f[t] || 0) * NAVIOS[t].tam, 0);
+const contaNavios = (f) => ORDEM.reduce((a, t) => a + (f[t] || 0), 0);
+const copiaFrota = (f) => { const o = {}; ORDEM.forEach((t) => { if (f && f[t]) o[t] = f[t]; }); return o; };
+const FROTA_TRADICIONAL = { portaavioes: 1, encouracado: 1, cruzador: 2, fragata: 1 };
+const FROTA_FOLHA = { portaavioes: 2, encouracado: 3, cruzador: 4, fragata: 5, submarino: 8 };
+const totalNavios = (niv) => ORDEM.reduce((a, t) => a + (niv.frota[t] || 0), 0);
+const totalCasas = (niv) => ORDEM.reduce((a, t) => a + (niv.frota[t] || 0) * NAVIOS[t].tam, 0);
+const nivelPorId = (id) => NIVEIS.find((x) => x.id === id) || NIVEIS[1];
+
+/* =====================================================================
+   Regras do jogo (funções puras, usadas também nas simulações)
+   ===================================================================== */
+const sorteio = (m) => Math.floor(Math.random() * m);
+const escolher = (lista) => lista[sorteio(lista.length)];
+const coordDe = (i, n) => LETRAS[i % n] + (Math.floor(i / n) + 1);
+
+function listaFrota(frota) {
+  const out = [];
+  ORDEM.forEach((t) => { for (let k = 0; k < (frota[t] || 0); k++) out.push({ tipo: t, tam: NAVIOS[t].tam }); });
+  return out;
+}
+
+function celulasDe(n, r, c, tam, horiz) {
+  const cel = [];
+  for (let k = 0; k < tam; k++) {
+    const rr = horiz ? r : r + k, cc = horiz ? c + k : c;
+    if (rr < 0 || cc < 0 || rr >= n || cc >= n) return null;
+    cel.push(rr * n + cc);
+  }
+  return cel;
+}
+
+function livre(navios, cel, ignorarId) {
+  const ocup = new Set();
+  navios.forEach((s) => { if (s.id !== ignorarId) s.cel.forEach((i) => ocup.add(i)); });
+  return cel.every((i) => !ocup.has(i));
+}
+
+/* Sorteia as posições da frota inteira, sem sobreposição */
+function sortearFrota(n, lista, primeiroId) {
+  let seq = primeiroId || 1;
+  for (let tentativa = 0; tentativa < 800; tentativa++) {
+    const navios = [];
+    let ok = true;
+    for (const nv of lista) {
+      let colocou = false;
+      for (let t = 0; t < 300 && !colocou; t++) {
+        const horiz = Math.random() < 0.5, r = sorteio(n), c = sorteio(n);
+        const cel = celulasDe(n, r, c, nv.tam, horiz);
+        if (cel && livre(navios, cel)) { navios.push({ id: seq++, tipo: nv.tipo, tam: nv.tam, cel, h: horiz }); colocou = true; }
+      }
+      if (!colocou) { ok = false; break; }
+    }
+    if (ok) return navios;
+    seq = primeiroId || 1;
+  }
+  return null;
+}
+
+const afundado = (def, s) => s.cel.every((c) => def.tiros[c] === 2);
+const todosAfundados = (def) => def.navios.every((s) => afundado(def, s));
+
+/* Um tiro: devolve null se a casa já foi testada */
+function atirar(def, i) {
+  if (def.tiros[i]) return null;
+  const nav = def.navios.find((s) => s.cel.includes(i));
+  if (!nav) { def.tiros[i] = 1; return { res: 'agua' }; }
+  def.tiros[i] = 2;
+  return { res: afundado(def, nav) ? 'afundou' : 'acerto', navio: nav };
+}
+
+/* =====================================================================
+   O computador: três estratégias
+   ===================================================================== */
+function escolherJogada(ia, n, def) {
+  const t = def.tiros, total = n * n;
+  const afCel = new Set(), restantes = [];
+  def.navios.forEach((s) => { if (afundado(def, s)) s.cel.forEach((c) => afCel.add(c)); else restantes.push(s.tam); });
+  const livres = [], ativos = [];
+  for (let i = 0; i < total; i++) { if (!t[i]) livres.push(i); else if (t[i] === 2 && !afCel.has(i)) ativos.push(i); }
+
+  if (ia === 'aleatorio') return { i: escolher(livres), why: 'Sem pistas: sorteou uma casa qualquer.' };
+
+  if (ia === 'caca') {
+    if (ativos.length) {
+      const set = new Set(ativos), pontas = [];
+      ativos.forEach((i) => {
+        const r = Math.floor(i / n), c = i % n;
+        if (c + 1 < n && set.has(i + 1)) {
+          let c0 = c, c1 = c;
+          while (c0 > 0 && set.has(r * n + c0 - 1)) c0--;
+          while (c1 < n - 1 && set.has(r * n + c1 + 1)) c1++;
+          if (c0 > 0 && !t[r * n + c0 - 1]) pontas.push(r * n + c0 - 1);
+          if (c1 < n - 1 && !t[r * n + c1 + 1]) pontas.push(r * n + c1 + 1);
+        }
+        if (r + 1 < n && set.has(i + n)) {
+          let r0 = r, r1 = r;
+          while (r0 > 0 && set.has((r0 - 1) * n + c)) r0--;
+          while (r1 < n - 1 && set.has((r1 + 1) * n + c)) r1++;
+          if (r0 > 0 && !t[(r0 - 1) * n + c]) pontas.push((r0 - 1) * n + c);
+          if (r1 < n - 1 && !t[(r1 + 1) * n + c]) pontas.push((r1 + 1) * n + c);
+        }
+      });
+      if (pontas.length) return { i: escolher(pontas), why: 'SE acertou duas casas em linha, ENTÃO continua na mesma direção.' };
+      const viz = [];
+      ativos.forEach((i) => {
+        const r = Math.floor(i / n), c = i % n;
+        if (c > 0 && !t[i - 1]) viz.push(i - 1);
+        if (c < n - 1 && !t[i + 1]) viz.push(i + 1);
+        if (r > 0 && !t[i - n]) viz.push(i - n);
+        if (r < n - 1 && !t[i + n]) viz.push(i + n);
+      });
+      if (viz.length) return { i: escolher(viz), why: 'SE acertou e o navio ainda não afundou, ENTÃO testa uma casa ao lado do acerto.' };
+    }
+    const menor = Math.min(...restantes);
+    let pool = menor >= 2 ? livres.filter((i) => (Math.floor(i / n) + (i % n)) % 2 === 0) : livres;
+    if (!pool.length) pool = livres;
+    return { i: escolher(pool), why: menor >= 2 ? 'SE não há acerto pendente, ENTÃO procura em padrão de xadrez.' : 'SE não há acerto pendente, ENTÃO procura em uma casa qualquer.' };
+  }
+
+  /* calculista: conta todas as formas de encaixar os navios que restam */
+  const peso = new Array(total).fill(0), set = new Set(ativos);
+  restantes.forEach((tam) => {
+    [true, false].forEach((horiz) => {
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+        const cel = celulasDe(n, r, c, tam, horiz);
+        if (!cel || !cel.every((i) => t[i] !== 1 && !afCel.has(i))) continue;
+        const cob = cel.reduce((a, i) => a + (set.has(i) ? 1 : 0), 0);
+        const w = cob ? Math.pow(20, cob) : 1;
+        cel.forEach((i) => { if (!t[i]) peso[i] += w; });
+      }
+    });
+  });
+  let melhor = -1, cand = [];
+  livres.forEach((i) => { if (peso[i] > melhor) { melhor = peso[i]; cand = [i]; } else if (peso[i] === melhor) cand.push(i); });
+  return { i: escolher(cand.length ? cand : livres), why: ativos.length ? 'SE há acerto pendente, ENTÃO escolhe a casa com mais formas de encaixe perto dele.' : 'SE não há acerto pendente, ENTÃO escolhe a casa com mais formas de encaixe.' };
+}
+
+/* Simulação de uma partida inteira (o computador joga contra um jogador sorteado), usada nos testes */
+function simular(nivId, ia, jogadorIa, frota) {
+  const niv = nivelPorId(nivId), n = niv.n, lista = listaFrota(frota || niv.frota);
+  const a = { navios: sortearFrota(n, lista), tiros: new Array(n * n).fill(0) };
+  const b = { navios: sortearFrota(n, lista), tiros: new Array(n * n).fill(0) };
+  let jogadas = 0;
+  while (!todosAfundados(a)) {
+    const j = escolherJogada(jogadorIa || ia, n, a);
+    if (!atirar(a, j.i)) throw new Error('jogada repetida');
+    jogadas++;
+    if (jogadas > n * n) throw new Error('partida sem fim');
+  }
+  return jogadas;
+}
+
+/* =====================================================================
+   Estado
+   ===================================================================== */
+const cfg = { som: true, tema: null };
+try { Object.assign(cfg, JSON.parse(localStorage.getItem(KEY_CFG)) || {}); } catch (e) { /* padrão */ }
+const salvarCfg = () => { try { localStorage.setItem(KEY_CFG, JSON.stringify(cfg)); } catch (e) { /* sem armazenamento */ } };
+
+function novoEstado(manter) {
+  return {
+    v: 1, fase: 'config', nivel: (manter && manter.nivel) || 'intermediario', ia: 'aleatorio',
+    frota: copiaFrota((manter && manter.frota) || nivelPorId((manter && manter.nivel) || 'intermediario').frota),
+    eu: { navios: [], tiros: [] }, pc: { navios: [], tiros: [] },
+    vez: 'eu', log: [], razao: '', vencedor: null, seq: 1,
+    stats: { eu: { t: 0, a: 0 }, pc: { t: 0, a: 0 } }
+  };
+}
+let S = novoEstado();
+const niv = () => nivelPorId(S.nivel);
+const N = () => niv().n;
+
+function salvar() { /* esta versão não guarda a partida: cada rodada começa do zero */ }
+
+/* Apaga um salvamento antigo, se existir. A partida nunca é retomada. */
+function carregar() { try { localStorage.removeItem(KEY); } catch (e) { /* sem armazenamento */ } }
+
+/* =====================================================================
+   Som
+   ===================================================================== */
+let ac = null;
+function bip(f0, f1, dur, tipo, vol, atraso) {
+  if (!cfg.som) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+    const o = ac.createOscillator(), g = ac.createGain(), t0 = ac.currentTime + (atraso || 0);
+    o.type = tipo || 'sine';
+    o.frequency.setValueAtTime(f0, t0);
+    o.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t0 + dur);
+    g.gain.setValueAtTime(vol || 0.06, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t0); o.stop(t0 + dur + 0.02);
+  } catch (e) { /* sem áudio */ }
+}
+const SONS = {
+  agua: () => bip(520, 180, 0.18, 'sine', 0.06),
+  acerto: () => { bip(160, 70, 0.3, 'sawtooth', 0.07); bip(90, 50, 0.3, 'square', 0.04, 0.05); },
+  afundou: () => { [440, 349, 262, 196].forEach((f, i) => bip(f, f * 0.9, 0.22, 'triangle', 0.07, i * 0.13)); },
+  coloca: () => bip(420, 300, 0.09, 'triangle', 0.07),
+  erro: () => bip(200, 140, 0.15, 'square', 0.04),
+  vitoria: () => { [523, 659, 784, 1047].forEach((f, i) => bip(f, f, 0.22, 'triangle', 0.07, i * 0.12)); },
+  derrota: () => { [392, 330, 262, 196].forEach((f, i) => bip(f, f, 0.26, 'triangle', 0.06, i * 0.16)); }
+};
+const som = (k) => { if (SONS[k]) SONS[k](); };
+
+/* =====================================================================
+   Desenho
+   ===================================================================== */
+const $ = (s, r) => (r || document).querySelector(s);
+const palco = $('#palco');
+const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const plural = (n, a, b) => (n === 1 ? a : b);
+
+function navioSvg(tipo, h, extra) {
+  const L = NAVIOS[tipo].tam;
+  if (h) return '<svg viewBox="0 0 ' + (L * 100) + ' 100" preserveAspectRatio="none" aria-hidden="true"' + (extra || '') + '><use href="#nv-' + tipo + '" x="0" y="0" width="' + (L * 100) + '" height="100"/></svg>';
+  return '<svg viewBox="0 0 100 ' + (L * 100) + '" preserveAspectRatio="none" aria-hidden="true"' + (extra || '') + '><g transform="translate(100 0) rotate(90)"><use href="#nv-' + tipo + '" x="0" y="0" width="' + (L * 100) + '" height="100"/></g></svg>';
+}
+function miniNavio(tipo) {
+  const L = NAVIOS[tipo].tam;
+  return '<svg class="mini" viewBox="0 0 ' + (L * 100) + ' 100" style="width:' + (L * 26) + 'px" aria-hidden="true"><use href="#nv-' + tipo + '" x="0" y="0" width="' + (L * 100) + '" height="100"/></svg>';
+}
+
+const ESTRELA = Array.from({ length: 16 }, (_, k) => { const a = -Math.PI / 2 + k * Math.PI / 8, r = k % 2 ? 27 : 46; return (50 + r * Math.cos(a)).toFixed(1) + ',' + (50 + r * Math.sin(a)).toFixed(1); }).join(' ');
+const MARCA_AGUA = '<span class="marca m-agua CLS"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="17"/></svg></span>';
+const MARCA_ACERTO = '<span class="marca m-boom CLS"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="' + ESTRELA + '"/><circle cx="50" cy="50" r="13"/></svg></span>';
+
+/* Monta um tabuleiro. modo: "pos" (posicionar), "meu" (minha frota), "ataque" (mar do computador) */
+function tabuleiroHTML(def, modo, opcoes) {
+  const n = N(), o = opcoes || {};
+  const cols = LETRAS.slice(0, n).split('').map((l) => '<span>' + l + '</span>').join('');
+  const lins = Array.from({ length: n }, (_, i) => '<span>' + (i + 1) + '</span>').join('');
+  const mostrar = [];
+  def.navios.forEach((s) => {
+    const sunk = afundado(def, s);
+    if (modo === 'ataque' && !sunk && !o.revelar) return;
+    const cls = modo === 'ataque' ? (sunk ? 'navio--afundado' : 'navio--revelado') : (sunk ? 'navio--afundado' : '');
+    const i0 = Math.min.apply(null, s.cel), r = Math.floor(i0 / n), c = i0 % n;
+    const w = s.h ? s.tam : 1, h = s.h ? 1 : s.tam;
+    mostrar.push('<div class="navio ' + cls + '" style="left:' + (c / n * 100) + '%;top:' + (r / n * 100) + '%;width:' + (w / n * 100) + '%;height:' + (h / n * 100) + '%">' + navioSvg(s.tipo, s.h) + '</div>');
+  });
+  let celulas = '';
+  for (let i = 0; i < n * n; i++) {
+    const t = def.tiros[i] || 0, coord = coordDe(i, n);
+    const nova = o.ultimo === i;
+    let marca = '';
+    if (t === 1) marca = MARCA_AGUA.replace('CLS', nova ? 'nova' : '');
+    if (t === 2) marca = MARCA_ACERTO.replace('CLS', nova ? 'nova' : '');
+    let estado = t === 1 ? 'água' : t === 2 ? 'acerto' : 'ainda não testada';
+    if (modo === 'meu' || modo === 'pos') {
+      const nav = def.navios.find((s) => s.cel.includes(i));
+      if (modo === 'pos') estado = nav ? 'ocupada por ' + NAVIOS[nav.tipo].nome : 'livre';
+      else estado = (nav ? 'navio, ' : 'mar, ') + (t === 1 ? 'jogada na água' : t === 2 ? 'navio atingido' : 'sem jogada');
+    }
+    const ativo = (modo === 'ataque' && S.fase === 'batalha' && S.vez === 'eu' && !t) || modo === 'pos';
+    const tag = modo === 'meu' ? 'div' : 'button';
+    const attrs = modo === 'meu' ? ' role="img"' : ' type="button" data-i="' + i + '" aria-disabled="' + (ativo ? 'false' : 'true') + '"';
+    celulas += '<' + tag + ' class="celula"' + attrs + ' aria-label="' + coord + ', ' + estado + '" data-c="' + i + '"' + (modo === 'meu' ? '' : ' tabindex="' + (i === (o.foco || 0) ? '0' : '-1') + '"') + '>' + marca + '</' + tag + '>';
+  }
+  return '<div class="tabuleiro" style="--n:' + n + '">' +
+    '<div class="cols" aria-hidden="true">' + cols + '</div>' +
+    '<div class="lins" aria-hidden="true">' + lins + '</div>' +
+    '<div class="area" data-tab="' + modo + '"><div class="navios">' + mostrar.join('') + '</div>' + celulas + '</div></div>';
+}
+
+function frotaStatusHTML(def, titulo) {
+  const total = def.navios.length, rest = def.navios.filter((s) => !afundado(def, s)).length;
+  const chips = [...def.navios].sort((a, b) => ORDEM.indexOf(a.tipo) - ORDEM.indexOf(b.tipo)).map((s) =>
+    '<span class="chip' + (afundado(def, s) ? ' afundado' : '') + '" title="' + NAVIOS[s.tipo].nome + (afundado(def, s) ? ' (afundado)' : '') + '">' + miniNavio(s.tipo).replace('class="mini"', 'class="mini" style="height:18px;width:' + (s.tam * 18) + 'px"') + '<span class="oculto-visual" style="position:absolute;left:-9999px">' + NAVIOS[s.tipo].nome + (afundado(def, s) ? ', afundado' : '') + '</span></span>').join('');
+  return '<div class="frota-status"><h3>' + titulo + ': ' + rest + ' de ' + total + ' ' + plural(total, 'navio restante', 'navios restantes') + '</h3><div class="chips">' + chips + '</div></div>';
+}
+
+/* ---------- configuração ---------- */
+function frotaEditorHTML() {
+  const n = N(), cap = capacidade(n), usadas = celulasFrota(S.frota), tot = contaNavios(S.frota), pct = Math.round(usadas / (n * n) * 100);
+  const linhas = ORDEM.map((t) => {
+    const q = S.frota[t] || 0, tam = NAVIOS[t].tam, nome = NAVIOS[t].plural.toLowerCase();
+    const menosOff = q <= 0 || tot <= 1, maisOff = q >= MAX_POR_TIPO || usadas + tam > cap;
+    return '<li><span class="mini-wrap">' + miniNavio(t) + '</span><span class="nome">' + NAVIOS[t].nome + ' <small>(' + tam + ' ' + plural(tam, 'quadrado', 'quadrados') + ')</small></span>' +
+      '<span class="passo"><button type="button" data-f="' + t + '" data-d="-1" aria-label="Menos ' + nome + '"' + (menosOff ? ' disabled' : '') + '>-</button>' +
+      '<output aria-label="' + q + ' ' + nome + '">' + q + '</output>' +
+      '<button type="button" data-f="' + t + '" data-d="1" aria-label="Mais ' + nome + '"' + (maisOff ? ' disabled' : '') + '>+</button></span></li>';
+  }).join('');
+  const limite = usadas + 1 > cap ? ' Limite da grade atingido: tire um navio para colocar outro.' : '';
+  return '<ul class="frota-edit">' + linhas + '</ul>' +
+    '<p class="resumo-frota" role="status" aria-live="polite">' + tot + ' ' + plural(tot, 'navio ocupa', 'navios ocupam') + ' ' + usadas + ' de ' + (n * n) + ' casas (' + pct + '%).' + limite + '</p>' +
+    '<div class="presets"><button type="button" class="btn" data-acao="frota-sugerida">Frota sugerida do nível</button>' +
+    '<button type="button" class="btn" data-acao="frota-tradicional"' + (celulasFrota(FROTA_TRADICIONAL) > cap ? ' disabled' : '') + '>Frota tradicional (5 navios)</button>' +
+    '<button type="button" class="btn" data-acao="frota-folha"' + (celulasFrota(FROTA_FOLHA) > cap ? ' disabled title="Não cabe nesta grade"' : '') + '>Frota da folha (22 navios)</button></div>';
+}
+function renderConfig() {
+  palco.innerHTML =
+    '<section class="config">' +
+    '<div class="bloco"><h2>1. Escolha o nível</h2><p class="sub">O nível define o tamanho da grade. Ao trocar de nível, a frota volta para a sugestão dele.</p>' +
+    '<div class="opcoes" role="radiogroup" aria-label="Nível">' + NIVEIS.map((x) =>
+      '<button type="button" class="opcao" role="radio" data-nivel="' + x.id + '" aria-checked="' + (x.id === S.nivel) + '"><strong>' + x.nome + '</strong>' +
+      '<span>Grade de ' + x.n + ' x ' + x.n + ' | frota sugerida: ' + totalNavios(x) + ' navios</span></button>').join('') + '</div></div>' +
+    '<div class="bloco"><h2>2. Escolha a sua frota</h2><p class="sub">Você decide quantos navios de cada tipo entram na partida, em qualquer nível. O computador joga com a mesma frota.</p>' + frotaEditorHTML() + '</div>' +
+    (S.nivel === 'completo' ? (
+    '<div class="bloco"><h2>3. Como o computador vai jogar?</h2><p class="sub">Você pode ver o raciocínio dele durante a partida.</p>' +
+    '<div class="opcoes opcoes--3" role="radiogroup" aria-label="Estratégia do computador">' + ESTRATEGIAS.map((x) =>
+      '<button type="button" class="opcao" role="radio" data-ia="' + x.id + '" aria-checked="' + (x.id === S.ia) + '"><strong>' + x.nome + '</strong><span>' + x.desc + '</span></button>').join('') + '</div></div>'
+    ) : '') +
+    '<div><button class="btn btn--primario" type="button" data-acao="posicionar">Posicionar minha frota</button></div></section>';
+}
+function ajustarFrota(tipo, d) {
+  if (!NAVIOS[tipo]) return;
+  const q = (S.frota[tipo] || 0) + d, f = copiaFrota(S.frota);
+  f[tipo] = q; if (!f[tipo]) delete f[tipo];
+  if (q < 0 || q > MAX_POR_TIPO || contaNavios(f) < 1 || celulasFrota(f) > capacidade(N())) return;
+  S.frota = f; salvar(); renderConfig();
+  const alvo = palco.querySelector('[data-f="' + tipo + '"][data-d="' + d + '"]:not([disabled])') || palco.querySelector('[data-f="' + tipo + '"]:not([disabled])');
+  if (alvo) alvo.focus({ preventScroll: true });
+}
+
+/* ---------- posicionamento ---------- */
+const P = { sel: null, h: true, alvo: null, aviso: '' };
+function pendentes() {
+  const c = {};
+  S.eu.navios.forEach((s) => { c[s.tipo] = (c[s.tipo] || 0) + 1; });
+  const r = {};
+  ORDEM.forEach((t) => { r[t] = (S.frota[t] || 0) - (c[t] || 0); });
+  return r;
+}
+function garantirSelecao() {
+  const pd = pendentes();
+  if (!P.sel || pd[P.sel] <= 0) P.sel = ORDEM.find((t) => pd[t] > 0) || null;
+}
+function ancorar(i) {
+  const n = N(), tam = NAVIOS[P.sel].tam;
+  let r = Math.floor(i / n), c = i % n;
+  if (P.h) c = Math.min(c, n - tam); else r = Math.min(r, n - tam);
+  return { r, c };
+}
+function renderPosicionar() {
+  garantirSelecao();
+  const pd = pendentes(), faltam = ORDEM.reduce((a, t) => a + pd[t], 0);
+  const bandeja = ORDEM.filter((t) => (S.frota[t] || 0) > 0).map((t) =>
+    '<button type="button" class="item-navio" data-tipo="' + t + '" aria-pressed="' + (P.sel === t) + '"' + (pd[t] <= 0 ? ' disabled' : '') + '>' +
+    '<span class="nome">' + NAVIOS[t].nome + ' <small>(' + NAVIOS[t].tam + ' ' + plural(NAVIOS[t].tam, 'quadrado', 'quadrados') + ')</small></span>' +
+    '<span class="qtd">' + pd[t] + ' de ' + S.frota[t] + '</span>' + miniNavio(t) + '</button>').join('');
+  palco.innerHTML =
+    '<div class="layout-pos">' +
+    '<section class="bloco"><h2>Sua frota</h2><p class="sub">Escolha um navio, gire se quiser e toque na grade. Toque em um navio já posicionado para movê-lo.</p>' +
+    tabuleiroHTML(S.eu, 'pos', { foco: P.alvo || 0 }) + '<p class="dica" id="avisoPos" role="status" aria-live="polite">' + esc(P.aviso) + '</p></section>' +
+    '<aside class="bloco"><h2>Seus navios</h2><p class="sub">' + niv().nome + ': grade de ' + N() + ' x ' + N() + ', ' + contaNavios(S.frota) + ' ' + plural(contaNavios(S.frota), 'navio', 'navios') + '.</p>' +
+    '<div class="bandeja">' + bandeja + '</div>' +
+    '<div class="acoes">' +
+    '<button class="btn" type="button" data-acao="girar">Girar (R) <small id="orient">' + (P.h ? 'horizontal' : 'vertical') + '</small></button>' +
+    '<button class="btn" type="button" data-acao="aleatorio">Posicionar ao acaso</button>' +
+    '<button class="btn" type="button" data-acao="limpar">Limpar</button></div>' +
+    '<div class="acoes" style="margin-top:14px"><button class="btn" type="button" data-acao="config">Mudar nível</button>' +
+    '<button class="btn btn--primario" type="button" data-acao="iniciar"' + (faltam ? ' disabled' : '') + '>Iniciar batalha</button></div>' +
+    '<p class="dica">' + (faltam ? 'Faltam ' + faltam + ' ' + plural(faltam, 'navio', 'navios') + ' para posicionar.' : 'Frota pronta! O computador posicionará a dele em segredo.') + '</p></aside></div>';
+}
+
+function atualizarFantasma() {
+  const area = $('.area[data-tab="pos"]');
+  if (!area) return;
+  area.querySelectorAll('.fan-ok,.fan-no').forEach((e) => e.classList.remove('fan-ok', 'fan-no'));
+  if (P.alvo == null || !P.sel) return;
+  const n = N(), a = ancorar(P.alvo), cel = celulasDe(n, a.r, a.c, NAVIOS[P.sel].tam, P.h);
+  if (!cel) return;
+  const ok = livre(S.eu.navios, cel);
+  cel.forEach((i) => { const b = area.querySelector('[data-c="' + i + '"]'); if (b) b.classList.add(ok ? 'fan-ok' : 'fan-no'); });
+}
+
+function avisoPos(msg) { P.aviso = msg; const e = $('#avisoPos'); if (e) e.textContent = msg; }
+
+function clicarPos(i) {
+  const n = N(), nav = S.eu.navios.find((s) => s.cel.includes(i));
+  if (nav) { // pega o navio de volta
+    S.eu.navios = S.eu.navios.filter((s) => s.id !== nav.id);
+    P.sel = nav.tipo; P.h = nav.h; P.alvo = i;
+    avisoPos('Você pegou o ' + NAVIOS[nav.tipo].nome + '. Escolha o novo lugar.');
+    salvar(); renderPosicionar(); atualizarFantasma(); focarCelula(i);
+    return;
+  }
+  if (!P.sel) { avisoPos('Todos os navios já estão na grade. Toque em Iniciar batalha.'); return; }
+  const a = ancorar(i), cel = celulasDe(n, a.r, a.c, NAVIOS[P.sel].tam, P.h);
+  if (!cel || !livre(S.eu.navios, cel)) { som('erro'); avisoPos('Esse navio não cabe aí. Tente outro lugar ou gire o navio.'); return; }
+  S.eu.navios.push({ id: S.seq++, tipo: P.sel, tam: NAVIOS[P.sel].tam, cel, h: P.h });
+  som('coloca');
+  avisoPos(NAVIOS[P.sel].nome + ' posicionado em ' + coordDe(cel[0], n) + '.');
+  salvar(); renderPosicionar(); atualizarFantasma(); focarCelula(i);
+}
+
+function focarCelula(i) {
+  const b = palco.querySelector('.area [data-i="' + i + '"]');
+  if (b) { palco.querySelectorAll('.area [data-i]').forEach((x) => x.setAttribute('tabindex', '-1')); b.setAttribute('tabindex', '0'); }
+}
+
+/* ---------- batalha ---------- */
+const ultimo = { eu: null, pc: null };
+function textoLog(e) {
+  const quem = e.q === 'eu' ? 'Você disse' : 'O computador disse';
+  if (e.r === 'agua') return quem + ' <b>' + e.c + '</b>: água.';
+  if (e.r === 'acerto') return quem + ' <b>' + e.c + '</b>: ' + (e.q === 'eu' ? 'acertou um navio!' : 'acertou um dos seus navios!');
+  return quem + ' <b>' + e.c + '</b>: ' + (e.q === 'eu' ? 'afundou o ' + e.n + '!' : 'afundou o seu ' + e.n + '!');
+}
+function pensaHTML() {
+  const regras = {
+    aleatorio: [['Sem pistas', 'SE a casa ainda não foi testada, ENTÃO ela pode ser escolhida. O computador sorteia uma delas.']],
+    caca: [
+      ['Duas casas em linha', 'SE acertou duas casas em linha, ENTÃO continua na mesma direção.'],
+      ['Acerto pendente', 'SE acertou e o navio ainda não afundou, ENTÃO testa uma casa ao lado do acerto.'],
+      ['Sem acerto pendente', 'SE não há acerto pendente, ENTÃO procura em outra região, em padrão de xadrez.']
+    ],
+    calculista: [
+      ['Acerto pendente', 'SE há acerto pendente, ENTÃO as casas perto dele valem mais, porque mais navios podem passar por ali.'],
+      ['Sem acerto pendente', 'SE não há acerto pendente, ENTÃO escolhe a casa por onde passam mais formas de encaixar os navios que restam.'],
+      ['Água', 'SE a jogada foi na água, ENTÃO nenhuma forma de encaixe pode passar por aquela casa.']
+    ]
+  }[S.ia];
+  const ativa = S.razao || '';
+  return '<ol>' + regras.map((r) => '<li' + (ativa && (S.ia === 'aleatorio' || r[1].replace(/\.$/, '').slice(0, 24) === ativa.slice(0, 24)) ? ' class="ativa"' : '') + '><b>' + r[0] + '.</b> ' + r[1] + '</li>').join('') + '</ol>';
+}
+function renderBatalha(foco) {
+  const fim = S.fase === 'fim', st = S.stats;
+  const acc = (x) => (x.t ? Math.round(x.a / x.t * 100) : 0);
+  let msg, cls = '';
+  if (fim) { msg = S.vencedor === 'eu' ? 'Você venceu! Toda a frota do computador foi afundada.' : 'O computador venceu. Sua frota foi afundada.'; cls = 'fim'; }
+  else if (S.vez === 'eu') msg = 'Sua vez: escolha uma coordenada no mar do computador.';
+  else { msg = 'Vez do computador...'; cls = 'vez-pc'; }
+  const logItens = [...S.log].reverse().map((e) => '<li class="' + e.q + (e.r !== 'agua' ? ' acerto' : '') + '">' + textoLog(e) + (e.why ? '<small>Regra usada: ' + esc(e.why) + '</small>' : '') + '</li>').join('') || '<li>Nenhuma jogada ainda.</li>';
+  palco.innerHTML =
+    '<div class="status ' + cls + '" role="status"><span>' + msg + '</span>' + (fim ? '<button class="btn" type="button" data-acao="novo">Jogar de novo</button>' : '') + '</div>' +
+    '<div class="duplo">' +
+    '<section class="bloco"><h2>Mar do computador</h2><p class="sub">Seu tabuleiro de tentativas. Toque em uma casa para jogar.</p>' +
+    tabuleiroHTML(S.pc, 'ataque', { revelar: fim, ultimo: ultimo.eu, foco: foco == null ? 0 : foco }) + frotaStatusHTML(S.pc, 'Frota do computador') + '</section>' +
+    '<section class="bloco"><h2>Sua frota</h2><p class="sub">Aqui aparecem as jogadas do computador.</p>' +
+    tabuleiroHTML(S.eu, 'meu', { ultimo: ultimo.pc }) + frotaStatusHTML(S.eu, 'Sua frota') + '</section></div>' +
+    '<div class="baixo">' +
+    '<section class="bloco"><h2>Registro de jogadas</h2><p class="sub">Você: ' + st.eu.t + ' ' + plural(st.eu.t, 'jogada', 'jogadas') + ', ' + acc(st.eu) + '% de acertos. Computador: ' + st.pc.t + ' ' + plural(st.pc.t, 'jogada', 'jogadas') + ', ' + acc(st.pc) + '%.</p><ul class="log" aria-live="polite" style="list-style:none">' + logItens + '</ul></section>' +
+    '<section class="bloco pensa"><h2>Como o computador pensa</h2><p class="sub">Estratégia: <b>' + ESTRATEGIAS.find((x) => x.id === S.ia).nome + '</b>. A regra usada na última jogada aparece destacada.</p><details open><summary>Ver as regras (SE... ENTÃO...)</summary>' + pensaHTML() + '</details></section></div>';
+}
+
+function render(foco) {
+  if (S.fase === 'config') renderConfig();
+  else if (S.fase === 'posicionar') { renderPosicionar(); atualizarFantasma(); }
+  else renderBatalha(foco);
+}
+
+/* =====================================================================
+   Fluxo do jogo
+   ===================================================================== */
+let timerPC = null, ATRASO = 1100;
+function novaRodada() {
+  clearTimeout(timerPC);
+  S = novoEstado(S);
+  ultimo.eu = ultimo.pc = null; P.sel = null; P.h = true; P.alvo = null; P.aviso = '';
+  render();
+  window.scrollTo(0, 0);
+}
+function iniciarPosicionamento() {
+  const n = N();
+  if (S.nivel !== 'completo') S.ia = 'aleatorio'; // só a Frota completa permite outra estratégia
+  S.fase = 'posicionar'; S.eu = { navios: [], tiros: new Array(n * n).fill(0) }; S.pc = { navios: [], tiros: new Array(n * n).fill(0) };
+  S.log = []; S.vez = 'eu'; S.razao = ''; S.vencedor = null; S.stats = { eu: { t: 0, a: 0 }, pc: { t: 0, a: 0 } };
+  ultimo.eu = ultimo.pc = null; P.sel = null; P.h = true; P.alvo = null; P.aviso = '';
+  salvar(); render();
+}
+function iniciarBatalha() {
+  const n = N();
+  const frotaPc = sortearFrota(n, listaFrota(S.frota), S.seq);
+  if (!frotaPc) return;
+  S.seq += frotaPc.length + 1;
+  S.pc.navios = frotaPc; S.pc.tiros = new Array(n * n).fill(0); S.eu.tiros = new Array(n * n).fill(0);
+  S.fase = 'batalha'; S.vez = 'eu'; S.log = []; S.razao = '';
+  salvar(); render();
+}
+function registrar(q, i, r, why) {
+  const n = N();
+  S.log.push({ q, c: coordDe(i, n), r: r.res, n: r.navio ? NAVIOS[r.navio.tipo].nome : '', why: why || '' });
+  if (S.log.length > 80) S.log.shift();
+  S.stats[q].t++;
+  if (r.res !== 'agua') S.stats[q].a++;
+  som(r.res);
+}
+function jogarEu(i) {
+  if (S.fase !== 'batalha' || S.vez !== 'eu') return;
+  const r = atirar(S.pc, i);
+  if (!r) return;
+  ultimo.eu = i;
+  registrar('eu', i, r);
+  if (todosAfundados(S.pc)) { terminar('eu'); return; }
+  S.vez = 'pc';
+  salvar(); render(i);
+  focarAtaque(i);
+  agendarPC();
+}
+function agendarPC() { clearTimeout(timerPC); timerPC = setTimeout(jogarPC, ATRASO); }
+function jogarPC() {
+  if (S.fase !== 'batalha' || S.vez !== 'pc') return;
+  const j = escolherJogada(S.ia, N(), S.eu);
+  const r = atirar(S.eu, j.i);
+  if (!r) return;
+  ultimo.pc = j.i; S.razao = j.why;
+  registrar('pc', j.i, r, j.why);
+  if (todosAfundados(S.eu)) { terminar('pc'); return; }
+  S.vez = 'eu';
+  salvar();
+  const f = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.i : null;
+  render(f == null ? 0 : +f);
+  if (f != null) focarAtaque(+f);
+}
+function focarAtaque(i) {
+  const b = palco.querySelector('.area[data-tab="ataque"] [data-i="' + i + '"]');
+  if (b) b.focus({ preventScroll: true });
+}
+function terminar(venc) {
+  S.fase = 'fim'; S.vencedor = venc;
+  salvar(); render();
+  som(venc === 'eu' ? 'vitoria' : 'derrota');
+  abrirFim();
+}
+function abrirFim() {
+  const st = S.stats, acc = st.eu.t ? Math.round(st.eu.a / st.eu.t * 100) : 0, ven = S.vencedor === 'eu';
+  $('#tFim').textContent = ven ? 'Você venceu!' : 'O computador venceu';
+  $('#fimTexto').textContent = ven
+    ? 'Você afundou toda a frota do computador em ' + st.eu.t + ' jogadas.'
+    : 'O computador afundou sua frota em ' + st.pc.t + ' jogadas. Você acertou ' + st.eu.a + ' de ' + st.eu.t + ' jogadas.';
+  $('#fimResumo').innerHTML = '<div><strong>' + st.eu.t + '</strong><span>suas jogadas</span></div><div><strong>' + acc + '%</strong><span>de acertos</span></div><div><strong>' + st.pc.t + '</strong><span>jogadas do computador</span></div>';
+  $('#fimPense').innerHTML = '<b>Pense:</b> que estratégia você usou? Depois de um acerto, qual casa você testou primeiro e por quê? E o computador: qual regra ele usou?';
+  abrirJanela('janelaFim');
+}
+
+/* =====================================================================
+   Janelas e eventos
+   ===================================================================== */
+function abrirJanela(id) { const j = $('#' + id); j.hidden = false; const b = j.querySelector('button.btn--primario') || j.querySelector('button'); if (b) b.focus(); }
+function fecharJanela(id) { $('#' + id).hidden = true; }
+
+$('#btnRegras').addEventListener('click', () => abrirJanela('janelaRegras'));
+$('#btnRegrasFechar').addEventListener('click', () => fecharJanela('janelaRegras'));
+$('#btnReset').addEventListener('click', () => abrirJanela('janelaReset'));
+$('#btnResetNao').addEventListener('click', () => fecharJanela('janelaReset'));
+$('#btnResetSim').addEventListener('click', () => {
+  fecharJanela('janelaReset'); clearTimeout(timerPC);
+  S = novoEstado(S); ultimo.eu = ultimo.pc = null;
+  render();
+});
+$('#fimVer').addEventListener('click', () => fecharJanela('janelaFim'));
+$('#fimNovo').addEventListener('click', () => { fecharJanela('janelaFim'); novaRodada(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') ['janelaRegras', 'janelaReset', 'janelaFim'].forEach((id) => { if (!$('#' + id).hidden) fecharJanela(id); });
+  if ((e.key === 'r' || e.key === 'R') && S.fase === 'posicionar' && !e.ctrlKey && !e.metaKey && !e.altKey && !/^(INPUT|TEXTAREA)$/.test((e.target || {}).tagName || '')) { e.preventDefault(); girar(); }
+});
+
+const ICONE_SOL = '<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>';
+const ICONE_LUA = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+function aplicarTema(t) {
+  document.documentElement.setAttribute('data-tema', t);
+  const escuro = t === 'escuro', b = $('#btnTema');
+  b.setAttribute('aria-pressed', String(escuro));
+  b.setAttribute('aria-label', escuro ? 'Mudar para o modo claro' : 'Mudar para o modo escuro');
+  $('#temaTexto').textContent = escuro ? 'Claro' : 'Escuro';
+  $('#temaIcone').innerHTML = escuro ? ICONE_SOL : ICONE_LUA;
+}
+$('#btnTema').addEventListener('click', () => {
+  const novo = document.documentElement.getAttribute('data-tema') === 'escuro' ? 'claro' : 'escuro';
+  cfg.tema = novo; salvarCfg(); aplicarTema(novo);
+});
+
+function atualizarSom() {
+  $('#btnSom').setAttribute('aria-pressed', String(cfg.som));
+  $('#btnSom').setAttribute('aria-label', cfg.som ? 'Som ligado. Toque para desligar' : 'Som desligado. Toque para ligar');
+  $('#somTexto').textContent = cfg.som ? 'Som' : 'Mudo';
+  $('#somOnda').style.display = cfg.som ? '' : 'none';
+}
+$('#btnSom').addEventListener('click', () => { cfg.som = !cfg.som; salvarCfg(); atualizarSom(); if (cfg.som) som('coloca'); });
+
+function girar() {
+  P.h = !P.h;
+  const o = $('#orient'); if (o) o.textContent = P.h ? 'horizontal' : 'vertical';
+  atualizarFantasma();
+}
+
+palco.addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.nivel) { S.nivel = b.dataset.nivel; S.ia = 'aleatorio'; S.frota = copiaFrota(nivelPorId(S.nivel).frota); salvar(); renderConfig(); return; }
+  if (b.dataset.f) { ajustarFrota(b.dataset.f, +b.dataset.d); return; }
+  if (b.dataset.ia) { S.ia = b.dataset.ia; salvar(); renderConfig(); return; }
+  if (b.dataset.tipo) { P.sel = b.dataset.tipo; renderPosicionar(); atualizarFantasma(); return; }
+  if (b.classList.contains('celula') && b.dataset.i != null) {
+    const i = +b.dataset.i;
+    if (b.closest('.area').dataset.tab === 'pos') clicarPos(i);
+    else if (b.getAttribute('aria-disabled') === 'false') jogarEu(i);
+    return;
+  }
+  const a = b.dataset.acao;
+  if (a === 'frota-sugerida') { S.frota = copiaFrota(niv().frota); salvar(); renderConfig(); }
+  else if (a === 'frota-tradicional') { S.frota = copiaFrota(FROTA_TRADICIONAL); salvar(); renderConfig(); }
+  else if (a === 'frota-folha') { S.frota = copiaFrota(FROTA_FOLHA); salvar(); renderConfig(); }
+  else if (a === 'posicionar') iniciarPosicionamento();
+  else if (a === 'girar') girar();
+  else if (a === 'aleatorio') {
+    S.eu.navios = sortearFrota(N(), listaFrota(S.frota), S.seq) || []; S.seq += S.eu.navios.length + 1;
+    P.sel = null; avisoPos('Frota posicionada ao acaso. Toque em um navio para movê-lo.'); som('coloca'); salvar(); renderPosicionar(); atualizarFantasma();
+  } else if (a === 'limpar') { S.eu.navios = []; P.sel = null; avisoPos('Grade limpa.'); salvar(); renderPosicionar(); atualizarFantasma(); }
+  else if (a === 'config') { S = novoEstado(S); salvar(); render(); }
+  else if (a === 'iniciar') iniciarBatalha();
+  else if (a === 'novo') novaRodada();
+});
+
+/* Pré-visualização do navio ao passar o mouse ou focar uma casa */
+function alvoDe(e) {
+  const b = e.target.closest && e.target.closest('.celula[data-i]');
+  if (!b || !b.closest('.area[data-tab="pos"]')) return;
+  P.alvo = +b.dataset.i; atualizarFantasma();
+}
+palco.addEventListener('pointerover', alvoDe);
+palco.addEventListener('focusin', alvoDe);
+palco.addEventListener('pointerleave', () => { if (S.fase === 'posicionar') { P.alvo = null; atualizarFantasma(); } });
+palco.addEventListener('contextmenu', (e) => { if (S.fase === 'posicionar' && e.target.closest('.area')) { e.preventDefault(); girar(); } });
+
+/* Navegação pelas setas dentro dos tabuleiros */
+palco.addEventListener('keydown', (e) => {
+  const b = e.target.closest && e.target.closest('.celula[data-i]');
+  if (!b || !/^Arrow/.test(e.key)) return;
+  const n = N(), i = +b.dataset.i, r = Math.floor(i / n), c = i % n;
+  const nr = r + (e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0), nc = c + (e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0);
+  if (nr < 0 || nc < 0 || nr >= n || nc >= n) return;
+  e.preventDefault();
+  const prox = b.closest('.area').querySelector('[data-i="' + (nr * n + nc) + '"]');
+  b.closest('.area').querySelectorAll('[data-i]').forEach((x) => x.setAttribute('tabindex', '-1'));
+  prox.setAttribute('tabindex', '0'); prox.focus();
+});
+
+/* O botão de voltar funciona na raiz do site e dentro de subpastas */
+$('#voltar').setAttribute('href', /\/arquivos\/[^/]+\/[^/]*$/.test(location.pathname) ? '../../index.html' : 'index.html');
+
+/* =====================================================================
+   Início
+   ===================================================================== */
+carregar();
+aplicarTema(document.documentElement.getAttribute('data-tema') || 'claro');
+atualizarSom();
+render();
+
+// Ganchos usados apenas nos testes automáticos
+window.__bn = { capacidade, celulasFrota, contaNavios, copiaFrota, FROTA_TRADICIONAL, FROTA_FOLHA, MAX_POR_TIPO, S: () => S, NIVEIS, NAVIOS, ORDEM, listaFrota, sortearFrota, escolherJogada, atirar, todosAfundados, simular, celulasDe, afundado, coordDe, jogarPC, setAtraso: (ms) => { ATRASO = ms; } };
+})();
+</script>
+</body>
+</html>

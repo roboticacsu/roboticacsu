@@ -44,13 +44,40 @@
 
 const RECURSOS = [
   {
+    "id": "batalha-naval-2026-10-02",
+    "titulo": "Batalha Naval",
+    "descricao": "Jogo de Batalha Naval contra o computador em que o estudante posiciona sua frota e tenta descobrir onde estão os navios do adversário, comunicando cada jogada por uma coordenada de letra e número. Em todos os níveis, da grade 6 x 6 à 10 x 10, o estudante escolhe quantos navios de cada tipo vão jogar. Na Frota completa, também escolhe como o computador joga, e um painel mostra o raciocínio dele (SE acertou, ENTÃO testa a casa ao lado). Cada rodada começa do zero.",
+    "turma": [
+      "construtores",
+      "inovadores"
+    ],
+    "tipo": "atividade",
+    "link": "batalha-naval.html",
+    "data": "2026-10-02",
+    "duracao": "1 aula de 60 min",
+    "bncc": [
+      "EF04CO01",
+      "EF05CO04"
+    ],
+    "etiquetas": [
+      "Coordenadas",
+      "Grade",
+      "Linhas e colunas",
+      "Estruturas condicionais",
+      "Estratégia",
+      "Pensamento computacional",
+      "Jogo",
+      "Interativo"
+    ]
+  },
+  {
     "id": "elevator-saga-2026-10-01",
     "titulo": "Elevator Saga",
     "descricao": "O Elevator Saga é um jogo em que o estudante escreve código em JavaScript para controlar elevadores em um prédio virtual. A cada desafio, é preciso transportar certo número de pessoas dentro de um limite de tempo ou de movimentos. Os desafios ficam progressivamente mais difíceis, com mais andares, mais elevadores e metas mais exigentes.",
     "turma": "criadores",
     "tipo": "atividade",
-    "data": "2026-10-01",
     "link": "https://play.elevatorsaga.com/",
+    "data": "2026-10-01",
     "etiquetas": [
       "JavaScript",
       "Programação",
@@ -70,11 +97,12 @@ const RECURSOS = [
       "inovadores",
       "descobridores",
       "criadores",
-      "inventores"
+      "inventores",
+      "olimpica"
     ],
     "tipo": "atividade",
-    "data": "2026-10-01",
     "link": "cesta-cheia.html",
+    "data": "2026-10-01",
     "duracao": "5 minutos por partida",
     "etiquetas": [
       "Cidadania",
@@ -93,8 +121,8 @@ const RECURSOS = [
     "descricao": "Laboratório 3D de blocos de montar com 42 peças e uma mesa ampliada de 24 x 24 pinos, que comporta centenas de blocos. Os estudantes constroem e testam alavanca, plano inclinado, polia, roda e eixo, cunha e parafuso, exploram mecanismos com motor (engrenagens, correia, sem-fim, came e biela) e programam um robô com sensor de distância. Inclui 14 missões com perguntas de reflexão. A construção fica salva no navegador.",
     "turma": "exploradores",
     "tipo": "atividade",
-    "data": "2026-09-29",
     "link": "oficina-maquinas-simples.html",
+    "data": "2026-09-29",
     "etiquetas": [
       "Máquinas simples",
       "Alavanca",
